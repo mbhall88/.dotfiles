@@ -1,0 +1,24 @@
+# aliases and functions to use across shell environments
+alias ..='cd ..'  # go up one directory
+alias ...='cd ../..'  # go up two directories
+alias ....='cd ../../..'  # go up three directories
+alias c='clear'  # clear the screen
+alias ll='ls -lha'  # use long list format
+alias l.='ls -d .* --color=auto'  # show hidden files
+alias bc='bc -l'  # start calculator with maths support
+alias df='df -H'  # human readable df by default
+alias du='du -c'  # human readable du with a grand total
+alias xs='exa'
+alias xl='exa --long --header --group --git --all'
+
+# functions to count the number of files/dirs in a directory
+function xc {
+    exa "$@" | wc -l
+}
+function lc {
+    ls "$@" | wc -l
+}
+# make a directory and then change into it
+function mkcd {
+    mkdir -p "$@" && cd "$@"
+}

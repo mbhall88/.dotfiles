@@ -1,0 +1,27 @@
+- defaults:
+    link:
+      relink:      true
+      force:       true
+
+- clean:           ['~']
+
+- link:
+    ~/.aliases:    aliases
+    ~/.tmux.conf:  tmux.conf
+    ~/.vim:        vim
+    ~/.vimrc:      vimrc
+    ~/.zshrc:      zshrc
+    ~/.hyper.js:   hyper.js
+    ~/.ideavimrc:  ideavimrc
+    ~/.gitconfig:  gitconfig
+    ~/.bashrc:     bashrc
+    ~/.zsh:        zsh
+    ~/.ssh/config: ssh.config
+    ~/.profile:    profile
+
+- create:
+    - ~/.vim/undo-history
+
+- shell:
+  - [git submodule update --init --recursive, Installing submodules]
+  - [sudo chsh -s $(which zsh), Making zsh the default shell]

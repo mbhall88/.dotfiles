@@ -1,0 +1,5 @@
+[user]
+	name = Michael Hall
+	email = michael@mbh.sh
+[credential]
+	helper = store
