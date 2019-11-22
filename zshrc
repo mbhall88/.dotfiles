@@ -1,4 +1,6 @@
+exec bash
 source "$HOME"/.bashrc
+exec zsh
 # User configuration
 
 # You may need to manually set your language environment
