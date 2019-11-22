@@ -27,9 +27,6 @@ function mkcd {
 
 case "$HOSTNAME" in
     *ebi.ac*)
-        alias lustre='cd /hps/nobackup/research/zi/mbhall/'
-        alias nfs='cd /nfs/research1/zi/mbhall/'
-
         # function to run interactive gpu job
         bsub_gpu() {
             mem="${1:-4}"

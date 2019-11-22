@@ -35,13 +35,24 @@ case "$HOSTNAME" in
         	. /etc/bashrc
         fi
 
-        ftp_site=/ebi/ftp/private/madagascox
+        case "$HOSTNAME" in
+            *noah*)
+                LUSTRE="/hps/nobackup/research/zi/mbhall"
+                NFS="/nfs/research1/zi/mbhall"
+                ftp_site=/ebi/ftp/private/madagascox
+                ;;
+            *yoda*)
+                LUSTRE="/hps/nobackup/iqbal/mbhall"
+                NFS="/nfs/leia/research/iqbal/mbhall"
+                ;;
+            esac
 
-        . /nfs/research1/zi/software/sourceme
-        export PATH="/nfs/research1/zi/mbhall/Software/bin/:$PATH"
+        . "$(dirname $NFS)/software/sourceme"
+        
+        export PATH="${NFS}/Software/bin/:$PATH"
 
         # added by Miniconda3 4.5.12 installer
-        export PATH="$PATH:/nfs/research1/zi/mbhall/Software/miniconda3/bin"
+        export PATH="${PATH}:${NFS}/Software/miniconda3/bin"
 
         # make --user pip installs in path
         export PATH="$HOME/.local/bin:$PATH"
@@ -50,10 +61,13 @@ case "$HOSTNAME" in
         export XDG_RUNTIME_DIR=""
 
         # set the singularity cache directory to where I want it rather than the default
-        export SINGULARITY_CACHEDIR="/nfs/research1/zi/mbhall/Software/Singularity_images"
+        export SINGULARITY_CACHEDIR="${NFS}/Software/Singularity_images"
 
         # allow user and group read, write, and execute permissions on all files/dirs I create
         umask 002
+
+        alias lustre="cd ${LUSTRE}"
+        alias nfs="cd ${NFS}"
         ;;
 esac
 
