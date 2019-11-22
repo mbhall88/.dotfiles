@@ -24,6 +24,39 @@
 #     fi
 # fi
 
+# ===================================
+# Section for loading profile for cluster
+
+case "$HOSTNAME" in
+    *ebi.ac*)
+
+        # Source global definitions
+        if [ -f /etc/bashrc ]; then
+        	. /etc/bashrc
+        fi
+
+        ftp_site=/ebi/ftp/private/madagascox
+
+        . /nfs/research1/zi/software/sourceme
+        export PATH="/nfs/research1/zi/mbhall/Software/bin/:$PATH"
+
+        # added by Miniconda3 4.5.12 installer
+        export PATH="$PATH:/nfs/research1/zi/mbhall/Software/miniconda3/bin"
+
+        # make --user pip installs in path
+        export PATH="$HOME/.local/bin:$PATH"
+
+        # required to run jupyter
+        export XDG_RUNTIME_DIR=""
+
+        # set the singularity cache directory to where I want it rather than the default
+        export SINGULARITY_CACHEDIR="/nfs/research1/zi/mbhall/Software/Singularity_images"
+
+        # allow user and group read, write, and execute permissions on all files/dirs I create
+        umask 002
+        ;;
+esac
+
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"

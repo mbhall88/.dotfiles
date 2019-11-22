@@ -104,3 +104,50 @@ fi
 
 # set vim mode for terminal
 set -o vi
+
+case "$HOSTNAME" in
+    *ebi.ac*)
+        # bash_prompt
+        # The various escape codes that we can use to color our prompt.
+        RED="\[\033[0;31m\]"
+        YELLOW="\[\033[0;33m\]"
+        GREEN="\[\033[0;32m\]"
+        BLUE="\[\033[1;34m\]"
+        LIGHT_RED="\[\033[1;31m\]"
+        LIGHT_GREEN="\[\033[1;32m\]"
+        WHITE="\[\033[1;37m\]"
+        LIGHT_GRAY="\[\033[0;37m\]"
+        PURPLE="\[\e[38;5;13m\]"
+        BOLD="\[\e[1m\]"
+        COLOR_NONE="\[\e[0m\]"
+         # Determine active Python virtualenv details.
+        function set_virtualenv () {
+            if test -z "$VIRTUAL_ENV" ; then
+               PYTHON_VIRTUALENV=""
+            else
+                PYTHON_VIRTUALENV="${BLUE}($(basename $VIRTUAL_ENV))${COLOR_NONE} "
+            fi
+        }
+        # change the bash prompt
+        function prompt_right() {
+          echo -e "${LIGHT_GREEN}\\\t${COLOR_NONE}"
+        }
+
+        function prompt_left() {
+          set_virtualenv
+          echo -e "${RED}\h${COLOR_NONE} in ${BOLD}${PURPLE}\w${COLOR_NONE}${COLOR_NONE}  ${YELLOW}$(git branch 2>/dev/null | sed -n "s/* \(.*\)/\1 /p")${COLOR_NONE} ${PYTHON_VIRTUALENV}"
+          # echo -e "\033[0;32m\u\033[0m at \033[0;31m\h\033[0m in \033[38;1;13m\w\033[0m"
+        }
+
+        function prompt() {
+            compensate=13
+            PS1=$(printf "%*s\r%s\n\$ " "$(($(tput cols)+${compensate}))" "$(prompt_right)" "$(prompt_left)")
+        }
+        PROMPT_COMMAND=prompt
+        # PS1='\[\e[38;5;14m\]\t\[\e[0m\]\r \[\e[38;32;14m\]\u\[\e[0m\] at \[\e[38;5;9m\]\H\[\e[0m\] in \[\e[1m\]\[\e[38;5;13m\]\w\[\e[0m\]  \[\e[38;5;11m\]$(git branch 2>/dev/null | sed -n "s/* \(.*\)/\1 /p")\[\e[0m\] \n \[\e[38;5;10m\]➜  \[\e[0m\]'
+        # ls colours
+        # https://askubuntu.com/questions/466198/how-do-i-change-the-color-for-directories-with-ls-in-the-console?newreg=ed7182979b8645b7924b41169df64ac4
+        LS_COLORS=$LS_COLORS:'ex=0;31:' ; export LS_COLORS
+        LS_COLORS=$LS_COLORS:'ow=1;34:' ; export LS_COLORS
+        ;;
+esac
