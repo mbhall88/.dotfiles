@@ -12,16 +12,13 @@ call vundle#begin()
 "call vundle#begin('~/some/path/here')
 
 Plugin 'VundleVim/Vundle.vim'
-" Plugin 'dracula/vim'
 Plugin 'joshdick/onedark.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'tpope/vim-surround'
 Plugin 'Yggdroot/indentline'
-Plugin 'scrooloose/nerdtree'
 Plugin 'itspriddle/vim-shellcheck'
 Plugin 'gabrielelana/vim-markdown'
-" Plugin 'ambv/black'
-" Plugin 'scrooloose/syntastic'
+Plugin 'tpope/vim-surround'
 
 " OSX stupid backspace fix
 " set backspace=indent,eol,start
