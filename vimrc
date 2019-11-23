@@ -18,7 +18,6 @@ Plugin 'tpope/vim-surround'
 Plugin 'Yggdroot/indentline'
 Plugin 'itspriddle/vim-shellcheck'
 Plugin 'gabrielelana/vim-markdown'
-Plugin 'tpope/vim-surround'
 
 " OSX stupid backspace fix
 " set backspace=indent,eol,start
