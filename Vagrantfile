@@ -11,11 +11,11 @@ VM_NAME = 'dev-vm'
 VM_USER = 'vagrant'
 
 # Username on your Mac
-USERNAME = ENV['USER']
+HOME = ENV['HOME']
 
 # Host folder to sync
-HOST_PATH = '/home/' + USERNAME + '/' + VM_NAME
-HOST_PROJ_PATH = '/home/' + USERNAME + '/' + 'Projects'
+HOST_PATH = HOME + '/' + VM_NAME
+HOST_PROJ_PATH = HOME + '/' + 'Projects'
 # Where to sync to on Guest — 'vagrant' is the default user name
 GUEST_PATH = '/home/' + VM_USER + '/' + VM_NAME
 GUEST_PROJ_PATH = '/home/' + VM_USER + '/' + 'Projects'
