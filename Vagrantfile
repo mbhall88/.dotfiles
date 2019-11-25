@@ -11,18 +11,14 @@ VM_NAME = 'dev-vm'
 VM_USER = 'vagrant'
 
 # Username on your Mac
-MAC_USER = ENV['USER']
+HOME = ENV['HOME']
 
 # Host folder to sync
-HOST_PATH = '/home/' + MAC_USER + '/' + VM_NAME
-HOST_PROJ_PATH = '/home/' + MAC_USER + '/' + 'Projects'
-HOST_OMZSH_PATH = '/home/' + MAC_USER + '/' + '.oh-my-zsh'
-HOST_CONFIGS_PATH = '/home/' + MAC_USER + '/' + 'Configs'
+HOST_PATH = HOME + '/' + VM_NAME
+HOST_PROJ_PATH = HOME + '/' + 'Projects'
 # Where to sync to on Guest — 'vagrant' is the default user name
 GUEST_PATH = '/home/' + VM_USER + '/' + VM_NAME
 GUEST_PROJ_PATH = '/home/' + VM_USER + '/' + 'Projects'
-GUEST_OMZSH_PATH = '/home/' + VM_USER + '/' + '.oh-my-zsh'
-GUEST_CONFIGS_PATH = '/home/' + VM_USER + '/' + 'Configs'
 # # VM Port — uncomment this to use NAT instead of DHCP
 # VM_PORT = 8080
 
@@ -51,8 +47,6 @@ Vagrant.configure(2) do |config|
   # Sync folder
   config.vm.synced_folder HOST_PATH, GUEST_PATH
   config.vm.synced_folder HOST_PROJ_PATH, GUEST_PROJ_PATH
-  config.vm.synced_folder HOST_OMZSH_PATH, GUEST_OMZSH_PATH
-  config.vm.synced_folder HOST_CONFIGS_PATH, GUEST_CONFIGS_PATH
 
   # Disable default Vagrant folder, use a unique path per project
   config.vm.synced_folder '.', '/home/'+VM_USER+'', disabled: true
