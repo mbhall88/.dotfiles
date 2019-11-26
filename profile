@@ -28,7 +28,7 @@
 # Section for loading profile for cluster
 
 case "$HOSTNAME" in
-    *ebi.ac*)
+    *noah* | *yoda*)
 
         # Source global definitions
         if [ -f /etc/bashrc ]; then
