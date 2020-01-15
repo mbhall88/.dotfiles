@@ -106,7 +106,7 @@ fi
 set -o vi
 
 case "$HOSTNAME" in
-    *noah* | *yoda*)
+    *noah* | *yoda* | *gpu*)
         # bash_prompt
         # The various escape codes that we can use to color our prompt.
         RED="\[\033[0;31m\]"
