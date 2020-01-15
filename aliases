@@ -26,7 +26,7 @@ function mkcd {
 }
 
 case "$HOSTNAME" in
-    *ebi.ac*)
+    *ebi.ac* | *noah*)
         # function to run interactive gpu job
         bsub_gpu() {
             mem="${1:-4}"
