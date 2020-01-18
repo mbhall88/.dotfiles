@@ -9,7 +9,7 @@ alias bc='bc -l'  # start calculator with maths support
 alias df='df -H'  # human readable df by default
 alias du='du -c'  # human readable du with a grand total
 alias xs='exa'
-alias xl='exa --long --header --group --git --all'
+alias xl='exa --long --header --group --all'
 alias gst='git status'
 alias gcam='git commit -am'
 
