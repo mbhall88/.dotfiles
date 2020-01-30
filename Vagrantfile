@@ -4,13 +4,13 @@
 # Box / OS
 VAGRANT_BOX = 'ubuntu/bionic64'
 
-# Memorable name for your
+# Memorable name for your VM
 VM_NAME = 'dev-vm'
 
 # VM User — 'vagrant' by default
 VM_USER = 'vagrant'
 
-# Username on your Mac
+# Username on your machine
 HOME = ENV['HOME']
 
 # Host folder to sync
@@ -71,13 +71,39 @@ Vagrant.configure(2) do |config|
     dpkg-reconfigure locales
 
     # ==========================
-    # INSTALL SINGULARITY
-    VERSION=2.6.1
-    wget -O - https://github.com/singularityware/singularity/releases/download/$VERSION/singularity-$VERSION.tar.gz | tar zxvf -
-    cd singularity-$VERSION
-    ./configure --prefix=/usr/local
-    make
-    make install
+    # INSTALL SINGULARITY and GO
+    apt-get update && apt-get install -y \
+        libssl-dev \
+        uuid-dev \
+        libgpgme11-dev \
+        squashfs-tools \
+        libseccomp-dev \
+        pkg-config \
+        git \
+        cryptsetup \
+        curl
+
+    # GO
+    export VERSION=1.13.7 OS=linux ARCH=amd64
+    wget -O - https://dl.google.com/go/go${VERSION}.${OS}-${ARCH}.tar.gz | tar -C /usr/local -xzf -
+    export GOPATH=${HOME}/go
+    export PATH=/usr/local/go/bin:$PATH
+
+    curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh |
+        sh -s -- -b $(go env GOPATH)/bin v1.15.0
+
+    # SINGULARITY
+    mkdir -p ${GOPATH}/src/github.com/sylabs && \
+        cd ${GOPATH}/src/github.com/sylabs && \
+        git clone https://github.com/sylabs/singularity.git && \
+        cd singularity
+    export VERSION=3.5.2
+    git checkout v${VERSION}
+    cd ${GOPATH}/src/github.com/sylabs/singularity && \
+        ./mconfig && \
+        cd ./builddir && \
+        make && \
+        make install
     # ==========================
 
     # ==========================
