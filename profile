@@ -39,7 +39,8 @@ case "$HOSTNAME" in
             *noah*)
                 LUSTRE="/hps/nobackup/research/zi/mbhall"
                 NFS="/nfs/research1/zi/mbhall"
-                ftp_site=/ebi/ftp/private/madagascox
+                export ftp_site=/ebi/ftp/private/madagascox
+                export SOFTWAREDIR="${NFS}/Software/"
                 ;;
             *yoda*)
                 LUSTRE="/hps/nobackup/iqbal/mbhall"
@@ -48,11 +49,11 @@ case "$HOSTNAME" in
             esac
 
         . "$(dirname $NFS)/software/sourceme"
-        
-        export PATH="${NFS}/Software/bin/:$PATH"
+
+        export PATH="${SOFTWAREDIR}/bin/:$PATH"
 
         # added by Miniconda3 4.5.12 installer
-        export PATH="${PATH}:${NFS}/Software/miniconda3/bin"
+        export PATH="${PATH}:${SOFTWAREDIR}/miniconda3/bin"
 
         # make --user pip installs in path
         export PATH="$HOME/.local/bin:$PATH"
@@ -61,7 +62,15 @@ case "$HOSTNAME" in
         export XDG_RUNTIME_DIR=""
 
         # set the singularity cache directory to where I want it rather than the default
-        export SINGULARITY_CACHEDIR="${NFS}/Software/Singularity_images"
+        export SINGULARITY_CACHEDIR="${SOFTWAREDIR}/Singularity_images"
+
+        # pyenv setup
+        export PYENV_ROOT="${SOFTWAREDIR}/.pyenv"
+        export PATH="$PYENV_ROOT/bin:$PATH"
+        if command -v pyenv 1>/dev/null 2>&1; then
+            eval "$(pyenv init -)"
+        fi
+
 
         # allow user and group read, write, and execute permissions on all files/dirs I create
         umask 002
