@@ -40,15 +40,16 @@ case "$HOSTNAME" in
                 LUSTRE="/hps/nobackup/research/zi/mbhall"
                 NFS="/nfs/research1/zi/mbhall"
                 export ftp_site=/ebi/ftp/private/madagascox
-                export SOFTWAREDIR="${NFS}/Software/"
+                export SOFTWAREDIR="${NFS}/Software"
                 ;;
             *yoda*)
                 LUSTRE="/hps/nobackup/iqbal/mbhall"
                 NFS="/nfs/leia/research/iqbal/mbhall"
+                export SOFTWAREDIR="${NFS}/Software"
                 ;;
             esac
 
-        . "$(dirname $NFS)/software/sourceme"
+        . "${SOFTWAREDIR}/sourceme"
 
         export PATH="${SOFTWAREDIR}/bin/:$PATH"
 
