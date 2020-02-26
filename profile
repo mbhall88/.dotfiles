@@ -97,8 +97,6 @@ if [ "$OS" = Darwin ]; then
     #
     # For pkg-config to find readline you may need to set:
     export PKG_CONFIG_PATH="/usr/local/opt/readline/lib/pkgconfig"
-else
-    echo "Warning: OS '$OS' is not Linux or Darwin."
 fi
 
 # added by travis gem
