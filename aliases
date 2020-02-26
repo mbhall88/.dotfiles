@@ -24,6 +24,10 @@ function lc {
 function mkcd {
     mkdir -p "$@" && cd "$@"
 }
+# count the number of sequences in a fast{a,q} file
+function cs {
+    fastaq count_sequences "$@"
+}
 
 case "$HOSTNAME" in
     *ebi.ac* | *noah* | *gpu*)
