@@ -149,5 +149,12 @@ case "$HOSTNAME" in
         # https://askubuntu.com/questions/466198/how-do-i-change-the-color-for-directories-with-ls-in-the-console?newreg=ed7182979b8645b7924b41169df64ac4
         LS_COLORS=$LS_COLORS:'ex=0;31:' ; export LS_COLORS
         LS_COLORS=$LS_COLORS:'ow=1;34:' ; export LS_COLORS
+        
+        # pyenv setup
+        export PYENV_ROOT="${SOFTWAREDIR}/.pyenv"
+        export PATH="$PYENV_ROOT/bin:$PATH"
+        if command -v pyenv 1>/dev/null 2>&1; then
+            eval "$(pyenv init -)"
+        fi
         ;;
 esac

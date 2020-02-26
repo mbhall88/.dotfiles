@@ -64,14 +64,6 @@ case "$HOSTNAME" in
         # set the singularity cache directory to where I want it rather than the default
         export SINGULARITY_CACHEDIR="${SOFTWAREDIR}/Singularity_images"
 
-        # pyenv setup
-        export PYENV_ROOT="${SOFTWAREDIR}/.pyenv"
-        export PATH="$PYENV_ROOT/bin:$PATH"
-        if command -v pyenv 1>/dev/null 2>&1; then
-            eval "$(pyenv init -)"
-        fi
-
-
         # allow user and group read, write, and execute permissions on all files/dirs I create
         umask 002
 
