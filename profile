@@ -84,9 +84,7 @@ if [ -d "$HOME/.local/bin" ] ; then
 fi
 
 OS=$(uname -s)
-if [ "$OS" = Linux ]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-elif [ "$OS" = Darwin ]; then
+if [ "$OS" = Darwin ]; then
     eval "$(/usr/local/Homebrew/bin/brew shellenv)"
     # readline is keg-only, which means it was not symlinked into /usr/local,
     # because macOS provides the BSD libedit library, which shadows libreadline.
