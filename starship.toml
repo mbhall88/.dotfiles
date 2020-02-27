@@ -10,13 +10,11 @@ prompt_order = [
     "directory",
     "git_branch",
     "git_commit",
-    "git_state",
     "git_status",
     "package",
     "python",
     "rust",
     "conda",
-    "env_var",
     "cmd_duration",
     "line_break",
     "time",
@@ -77,21 +75,6 @@ style = "bold green"
 only_detached = true  # Only show git commit hash when in detached HEAD state
 disabled = false
 
-# The git_state module will show in directories which are part of a git repository,
-# and where there is an operation in progress, such as: REBASING, BISECTING, etc.
-# If there is progress information (e.g., REBASING 3/10), that information will be shown too.
-[git_state]
-rebase = "REBASING"  # The text displayed when a rebase is in progress.
-merge = "MERGING"
-revert = "REVERTING"
-cherry_pick = "🍒 PICKING"
-bisect = "BISECTING"
-am = "AM"
-am_or_rebase = "AM/REBASE"
-progress_divider = "/"  # The symbol or text which will separate the current and total progress amounts. (e.g., " of ", for "3 of 10")
-style = "bold yellow"
-disabled = false
-
 # The git_status module shows symbols representing the state of the repo in your current directory.
 [git_status]
 conflicted = "🏳"
@@ -101,10 +84,6 @@ diverged = "😵"
 untracked = "🤷‍"
 stashed = "📦"
 modified = "📝"
-staged.value = "++"
-staged.style = "green"
-staged_count.enabled = true
-staged_count.style = "green"
 renamed = "👅"
 deleted = "🗑"
 show_sync_count = true  # Show ahead/behind count of the branch being tracked.
@@ -160,7 +139,7 @@ disabled = false
 
 # The time module shows the current local time.
 [time]
-use_12hr = false  #  	Enables 12 hour formatting
+use_12hr = false  # Enables 12 hour formatting
 format = "[📅%d/%m 🕙%R]"  # Use https://docs.rs/chrono/0.4.7/chrono/format/strftime/index.html to format
 style = "bold yellow"
 utc_time_offset = local  # Sets the UTC offset to use. Range from -24 < x < 24. Allows floats to accommodate 30/45 minute timezone offsets.
