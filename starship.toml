@@ -95,8 +95,8 @@ disabled = false
 # The hostname module shows the system hostname.
 [hostname]
 ssh_only = true  # Only show hostname when connected to an SSH session.
-prefix = "⟪"
-suffix = "⟫"
+prefix = "⟪ "
+suffix = " ⟫"
 trim_at = "."  # String that the hostname is cut off at, after the first match. "." will stop after the first dot. "" will disable any truncation
 style = "bold dimmed red"
 disabled = false
@@ -142,7 +142,7 @@ disabled = false
 use_12hr = false  # Enables 12 hour formatting
 format = "[📅%d/%m 🕙%R]"  # Use https://docs.rs/chrono/0.4.7/chrono/format/strftime/index.html to format
 style = "bold yellow"
-utc_time_offset = local  # Sets the UTC offset to use. Range from -24 < x < 24. Allows floats to accommodate 30/45 minute timezone offsets.
+utc_time_offset = "local"  # Sets the UTC offset to use. Range from -24 < x < 24. Allows floats to accommodate 30/45 minute timezone offsets.
 disabled = false
 
 # The username module shows active user's username.
