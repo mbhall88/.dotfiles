@@ -9,7 +9,6 @@ prompt_order = [
     "hostname",
     "directory",
     "git_branch",
-    "git_commit",
     "package",
     "python",
     "rust",
@@ -72,7 +71,7 @@ prefix = "("
 suffix = ") "
 style = "bold green"
 only_detached = true  # Only show git commit hash when in detached HEAD state
-disabled = false
+disabled = true
 
 # The git_status module shows symbols representing the state of the repo in your current directory.
 [git_status]
