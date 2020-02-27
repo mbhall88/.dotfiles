@@ -10,7 +10,6 @@ prompt_order = [
     "directory",
     "git_branch",
     "git_commit",
-    "git_status",
     "package",
     "python",
     "rust",
@@ -21,7 +20,7 @@ prompt_order = [
     "character",
 ]
 # Wait n milliseconds for starship to check files under the current directory.
-scan_timeout = 30
+scan_timeout = 10
 
 # The character module shows a character beside where the text is entered in your terminal.
 [character]
@@ -90,7 +89,7 @@ show_sync_count = true  # Show ahead/behind count of the branch being tracked.
 prefix = "["
 suffix = "] "
 style = "bold_red"
-disabled = false
+disabled = true
 
 # The hostname module shows the system hostname.
 [hostname]
