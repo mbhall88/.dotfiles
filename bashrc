@@ -162,5 +162,5 @@ if command -v pyenv 1>/dev/null 2>&1; then
 fi
 
 # init starship https://starship.rs
-export STARSHIP_CONFIG=~/.starship
+export STARSHIP_CONFIG="${HOME}/.starship"
 eval "$(starship init bash)"
