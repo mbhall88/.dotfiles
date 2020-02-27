@@ -70,25 +70,25 @@ disabled = false
 [git_commit]
 commit_hash_length = 7
 prefix = "("
-suffix = ")"
+suffix = ") "
 style = "bold green"
 only_detached = true  # Only show git commit hash when in detached HEAD state
 disabled = false
 
 # The git_status module shows symbols representing the state of the repo in your current directory.
 [git_status]
-conflicted = "🏳"
-ahead = "🏎💨"
-behind = "😰"
-diverged = "😵"
-untracked = "🤷‍"
-stashed = "📦"
-modified = "📝"
-renamed = "👅"
-deleted = "🗑"
+conflicted = "="
+ahead = "⇡"
+behind = "⇣"
+diverged = "⇕"
+untracked = "?"
+stashed = "$"
+modified = "!"
+renamed = "»"
+deleted = "✘"
 show_sync_count = true  # Show ahead/behind count of the branch being tracked.
 prefix = "["
-suffix = "]"
+suffix = "] "
 style = "bold_red"
 disabled = false
 
