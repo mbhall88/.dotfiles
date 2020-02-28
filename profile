@@ -70,6 +70,9 @@ case "$HOSTNAME" in
 
         alias lustre="cd ${LUSTRE}"
         alias nfs="cd ${NFS}"
+
+        # farmpy needs to know what memory units LSF uses
+        export FARMPY_LSF_MEMORY_UNITS="MB"
         ;;
 esac
 
