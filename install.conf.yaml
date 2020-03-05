@@ -19,6 +19,7 @@
     ~/.ssh/config:    ssh.config
     ~/.profile:       profile
     ~/.starship.toml: starship.toml
+    ~/.alacritty.yml: alacritty.yml
 
 - create:
     - ~/.vim/undo-history
