@@ -18,6 +18,8 @@ SAVEHIST=10000
 unsetopt auto_cd
 # Adds support for command substitution. You'll need this for the suggestion plugins.
 setopt prompt_subst
+# allow commenting lines with '#' like in bash
+setopt interactivecomments
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
