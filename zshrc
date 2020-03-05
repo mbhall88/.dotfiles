@@ -46,37 +46,39 @@ fi
 fpath=( "$HOME/.zsh/zfunctions" $fpath )
 
 # set spaceship themed prompt https://github.com/denysdovhan/spaceship-prompt
-autoload -U promptinit; promptinit
-prompt spaceship
+# autoload -U promptinit; promptinit
+# prompt spaceship
 
 
 # Number of folders of cwd to show in prompt, 0 to show all
-SPACESHIP_DIR_TRUNC=0
-# While in git repo, show only root directory and folders inside it
-SPACESHIP_DIR_TRUNC_REPO=false
-
-SPACESHIP_TIME_SHOW=true
-
-spaceship_vi_mode_enable
-
-SPACESHIP_RPROMPT_ORDER=(
-  time          # Time stamps section
-)
-SPACESHIP_PROMPT_ORDER=(
-  user          # Username section
-  dir           # Current directory section
-  host          # Hostname section
-  git           # Git section (git_branch + git_status)
-  rust          # Rust section
-  venv          # virtualenv section
-  pyenv         # Pyenv section
-  exec_time     # Execution time
-  line_sep      # Line break
-  vi_mode       # Vi-mode indicator
-  jobs          # Background jobs indicator
-  exit_code     # Exit code section
-  char          # Prompt character
-)
+# SPACESHIP_DIR_TRUNC=0
+# # While in git repo, show only root directory and folders inside it
+# SPACESHIP_DIR_TRUNC_REPO=false
+#
+# SPACESHIP_TIME_SHOW=true
+#
+# spaceship_vi_mode_enable
+#
+# SPACESHIP_RPROMPT_ORDER=(
+#   time          # Time stamps section
+# )
+# SPACESHIP_PROMPT_ORDER=(
+#   user          # Username section
+#   dir           # Current directory section
+#   host          # Hostname section
+#   git           # Git section (git_branch + git_status)
+#   rust          # Rust section
+#   venv          # virtualenv section
+#   pyenv         # Pyenv section
+#   exec_time     # Execution time
+#   line_sep      # Line break
+#   vi_mode       # Vi-mode indicator
+#   jobs          # Background jobs indicator
+#   exit_code     # Exit code section
+#   char          # Prompt character
+# )
+# initialise starship - https://starship.rs/
+eval "$(starship init zsh)"
 
 # add pyenv
 export PATH="$HOME/.pyenv/bin:$PATH"
