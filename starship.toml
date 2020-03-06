@@ -138,7 +138,7 @@ disabled = false
 # The time module shows the current local time.
 [time]
 use_12hr = false  # Enables 12 hour formatting
-format = "[%d/%m %R]"  # Use https://docs.rs/chrono/0.4.7/chrono/format/strftime/index.html to format
+format = "%R"  # Use https://docs.rs/chrono/0.4.7/chrono/format/strftime/index.html to format
 style = "bold yellow"
 utc_time_offset = "local"  # Sets the UTC offset to use. Range from -24 < x < 24. Allows floats to accommodate 30/45 minute timezone offsets.
 disabled = false
