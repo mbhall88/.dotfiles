@@ -19,6 +19,7 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'Yggdroot/indentline'
 Plugin 'itspriddle/vim-shellcheck'
 Plugin 'gabrielelana/vim-markdown'
+Plugin 'arcticicestudio/nord-vim'
 
 " OSX stupid backspace fix
 " set backspace=indent,eol,start
@@ -29,8 +30,6 @@ filetype plugin indent on " required
 """""""""""""""""""""""""""""""""""""
 " Configuration Section
 """""""""""""""""""""""""""""""""""""
-" colorscheme dracula
-" colorscheme one-dark
 " set background=dark
 " "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
 "If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
@@ -49,7 +48,7 @@ if (empty($TMUX))
 endif
 
 syntax on
-colorscheme onedark
+colorscheme nord
 
 " Show line numbers
 set number
