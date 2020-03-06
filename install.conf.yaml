@@ -20,6 +20,7 @@
     ~/.profile:       profile
     ~/.starship.toml: starship.toml
     ~/.alacritty.yml: alacritty.yml
+    ~/.dir_colors:    nord-dircolors/src/dir_colors
 
 - create:
     - ~/.vim/undo-history

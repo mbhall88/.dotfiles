@@ -137,3 +137,6 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 export STARSHIP_CONFIG="${HOME}/.starship.toml"
 
 export PATH="$HOME/.poetry/bin:$PATH"
+
+# set nord theme as default for dircolors - https://www.nordtheme.com/docs/ports/dircolors/
+test -r "${HOME}/.dir_colors" && eval "$(dircolors ~/.dir_colors)"
