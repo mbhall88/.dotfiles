@@ -139,4 +139,10 @@ export STARSHIP_CONFIG="${HOME}/.starship.toml"
 export PATH="$HOME/.poetry/bin:$PATH"
 
 # set nord theme as default for dircolors - https://www.nordtheme.com/docs/ports/dircolors/
-test -r "${HOME}/.dir_colors" && eval "$(dircolors ~/.dir_colors)"
+if [ -r "${HOME}/.dir_colors" ]; then
+    if [ "$OS" = Darwin ]; then
+        eval "$(gdircolors ~/.dir_colors)"
+    else
+        eval "$(dircolors ~/.dir_colors)"
+    fi
+fi
