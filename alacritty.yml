@@ -301,14 +301,14 @@ selection:
 # Allow terminal applications to change Alacritty's window title.
 #dynamic_title:                       true
 
-#cursor:
+cursor:
   # Cursor style
   #
   # Values for `style`:
   #   - ▇ Block
   #   - _ Underline
   #   - | Beam
-  #style:                             Block
+  style:                             Underline
 
   # If this is `true`, the cursor will be rendered as a hollow box when the
   # window is not focused.
@@ -750,6 +750,10 @@ schemes:
       magenta:                        '#B48EAD'
       cyan:                           '#8FBCBB'
       white:                          '#ECEFF4'
+
+    cursor:
+        text:                         '#eceff4'
+        cursor:                       '#d08770'
 
   onedark:                            &onedark
       primary:

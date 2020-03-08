@@ -4,7 +4,6 @@
 add_newline = false
 # Overwrite a default_prompt_order and  use custom prompt_order
 prompt_order = [
-    "singularity",
     "username",
     "hostname",
     "directory",
@@ -133,7 +132,7 @@ prefix = "["
 suffix = "]"
 symbol = "📦 "
 style = "bold dimmed blue"
-disabled = false
+disabled = true
 
 # The time module shows the current local time.
 [time]
