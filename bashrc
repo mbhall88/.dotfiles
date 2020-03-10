@@ -83,6 +83,10 @@ case "$HOSTNAME" in
         # pyenv setup
         export PYENV_ROOT="${SOFTWAREDIR}/.pyenv"
         export PATH="$PYENV_ROOT/bin:$PATH"
+
+        # prevent bash overridding byobu session names.
+        # see https://stackoverflow.com/questions/28475335/byobu-renames-windows-in-ssh-session
+        unset PROMPT_COMMAND
         ;;
 esac
 
