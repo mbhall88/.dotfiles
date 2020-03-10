@@ -33,7 +33,7 @@ disabled = false  # Disables the character module.
 # The cmd_duration module shows how long the last command took to execute.
 [cmd_duration]
 min_time = 10_000  # Shortest duration to show time for (in milliseconds).
-show_milliseconds = true  # Show milliseconds in addition to seconds for the duration.
+show_milliseconds = false  # Show milliseconds in addition to seconds for the duration.
 prefix = "took "  # Prefix to display immediately before the command duration.
 style = "bold yellow"  # The style for the module.
 disabled = false  # Disables the cmd_duration module.
