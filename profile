@@ -35,6 +35,9 @@ case "$HOSTNAME" in
         	. /etc/bashrc
         fi
 
+        # load singularity v3
+        module load singularity/3.5.0
+
         case "$HOSTNAME" in
             *noah*)
                 LUSTRE="/hps/nobackup/research/zi/mbhall"
