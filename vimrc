@@ -20,6 +20,9 @@ Plugin 'Yggdroot/indentline'
 Plugin 'itspriddle/vim-shellcheck'
 Plugin 'gabrielelana/vim-markdown'
 Plugin 'arcticicestudio/nord-vim'
+Plugin 'rust-lang/rust.vim'
+Plugin 'vim-syntastic/syntastic'
+Plugin 'tpope/vim-unimpaired'
 
 " OSX stupid backspace fix
 " set backspace=indent,eol,start
@@ -97,14 +100,30 @@ au BufNewFile,BufRead Snakefile set syntax=snakemake
 au BufNewFile,BufRead *.smk set syntax=snakemake
 
 " Syntastic settings
-" set statusline+=%#warningmsg#
-" set statusline+=%{SyntasticStatuslineFlag()}
-" set statusline+=%*
-"
-" let g:syntastic_always_populate_loc_list = 1
-" let g:syntastic_auto_loc_list = 1
-" let g:syntastic_check_on_open = 1
-" let g:syntastic_check_on_wq = 1
-" let g:syntastic_auto_jump = 1
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 1
+let g:syntastic_auto_jump = 1
+let g:syntastic_enable_signs = 1
 
 :set backspace=indent,eol,start
+
+" Highlight search results
+set hlsearch
+
+" Set incremental search
+set incsearch
+
+" Sets how Vim formats text - run `:h fo-table` to see meanings
+autocmd FileType * setlocal formatoptions=t formatoptions=q formatoptions=n
+"
+" Explicitly disable Vim from automatic comment insertion ALWAYS
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
+" Set the spelling language
+set spelllang=en_au,en_gb
