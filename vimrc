@@ -21,7 +21,6 @@ Plugin 'itspriddle/vim-shellcheck'
 Plugin 'gabrielelana/vim-markdown'
 Plugin 'arcticicestudio/nord-vim'
 Plugin 'rust-lang/rust.vim'
-Plugin 'vim-syntastic/syntastic'
 Plugin 'tpope/vim-unimpaired'
 
 " OSX stupid backspace fix
@@ -98,18 +97,6 @@ nmap <Enter> o<Esc>
 " snakemake syntax highlighting
 au BufNewFile,BufRead Snakefile set syntax=snakemake
 au BufNewFile,BufRead *.smk set syntax=snakemake
-
-" Syntastic settings
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 1
-let g:syntastic_auto_jump = 1
-let g:syntastic_enable_signs = 1
 
 :set backspace=indent,eol,start
 

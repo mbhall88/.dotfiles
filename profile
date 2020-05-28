@@ -110,6 +110,8 @@ if [ -f "${HOME}/.travis/travis.sh" ]; then
     . "${HOME}/.travis/travis.sh"
 fi
 
+# add GO to PATH
+export PATH="$PATH:/usr/local/go/bin"
 
 # Add rust cargo-installed programs in PATH
 export PATH="$HOME/.cargo/bin:$PATH"
@@ -121,6 +123,7 @@ export EDITOR="$VISUAL"
 # add pulse sercure to LD PATH
 if [ -d /usr/local/pulse ]; then
     export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/pulse"
+    export PATH="/usr/local/pulse:$PATH"
 fi
 
 # Alias definitions.
