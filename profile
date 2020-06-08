@@ -139,6 +139,9 @@ fi
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
+# set theme for bat
+export BAT_THEME="Nord"
+
 # set location of starship config https://starship.rs/
 export STARSHIP_CONFIG="${HOME}/.starship.toml"
 
