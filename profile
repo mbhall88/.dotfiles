@@ -44,6 +44,8 @@ case "$HOSTNAME" in
                 NFS="/nfs/research1/zi/mbhall"
                 export ftp_site=/ebi/ftp/private/madagascox
                 export SOFTWAREDIR="${NFS}/Software"
+                export LD_LIBRARY_PATH="${SOFTWAREDIR}/lib:$LD_LIBRARY_PATH"
+                export PKG_CONFIG_PATH="${SOFTWAREDIR}/lib/pkgconfig/:$PKG_CONFIG_PATH"
                 ;;
             *yoda*)
                 LUSTRE="/hps/nobackup/iqbal/mbhall"
