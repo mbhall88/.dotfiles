@@ -112,6 +112,8 @@ if [ -f "${HOME}/.travis/travis.sh" ]; then
     . "${HOME}/.travis/travis.sh"
 fi
 
+# add GO to PATH
+export PATH="$PATH:/usr/local/go/bin"
 
 # Add rust cargo-installed programs in PATH
 export PATH="$HOME/.cargo/bin:$PATH"
@@ -123,6 +125,7 @@ export EDITOR="$VISUAL"
 # add pulse sercure to LD PATH
 if [ -d /usr/local/pulse ]; then
     export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/pulse"
+    export PATH="/usr/local/pulse:$PATH"
 fi
 
 # Alias definitions.
@@ -137,6 +140,9 @@ fi
 
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# set theme for bat
+export BAT_THEME="Nord"
 
 # set location of starship config https://starship.rs/
 export STARSHIP_CONFIG="${HOME}/.starship.toml"
