@@ -80,3 +80,10 @@ set -o vi
 
 # init starship https://starship.rs
 eval "$(starship init bash)"
+
+# add pyenv to path
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+fi
