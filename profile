@@ -78,8 +78,27 @@ case "$HOSTNAME" in
 
         # farmpy needs to know what memory units LSF uses
         export FARMPY_LSF_MEMORY_UNITS="MB"
+
+        # pyenv setup
+        export PYENV_ROOT="${SOFTWAREDIR}/.pyenv"
+
+        # prevent bash overridding byobu session names.
+        # see https://stackoverflow.com/questions/28475335/byobu-renames-windows-in-ssh-session
+        unset PROMPT_COMMAND
         ;;
+    *)
+        # setup pyenv on non-cluster machines
+        export PYENV_ROOT="${HOME}/.pyenv"
+
 esac
+
+
+# add pyenv to path
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+fi
 
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then

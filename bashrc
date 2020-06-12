@@ -78,22 +78,5 @@ fi
 # set vim mode for terminal
 set -o vi
 
-case "$HOSTNAME" in
-    *noah* | *yoda* | *gpu*)
-        # pyenv setup
-        export PYENV_ROOT="${SOFTWAREDIR}/.pyenv"
-        export PATH="$PYENV_ROOT/bin:$PATH"
-
-        # prevent bash overridding byobu session names.
-        # see https://stackoverflow.com/questions/28475335/byobu-renames-windows-in-ssh-session
-        unset PROMPT_COMMAND
-        ;;
-esac
-
-if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-fi
-
 # init starship https://starship.rs
 eval "$(starship init bash)"
