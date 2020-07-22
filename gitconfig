@@ -3,3 +3,7 @@
 	email = michael@mbh.sh
 [credential]
 	helper = store
+[alias]
+    co = checkout
+    br = branch
+    last = log -1 HEAD

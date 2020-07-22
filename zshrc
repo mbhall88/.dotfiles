@@ -54,3 +54,9 @@ if command -v pyenv 1>/dev/null 2>&1; then
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
 fi
+
+# add rbenv to path
+export PATH="$HOME/.rbenv/bin:$PATH"
+if [ -x "$(command -v rbenv)" ]; then
+    eval "$(rbenv init -)"
+fi
