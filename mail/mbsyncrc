@@ -1,0 +1,130 @@
+#################################
+######## Account mailbox ########
+#################################
+
+IMAPAccount ebi
+Host incoming.ebi.ac.uk
+User mbhall88
+PassCmd "op get item bssrpkn77fhuniqfjgg5priunu --fields password"
+SSLType IMAPS
+SSLVersions TLSv1.2
+CertificateFile ~/.dotfiles/mail/ebi-certificates.crt
+
+# Remote storage
+IMAPStore ebi-remote
+Account ebi
+
+# Local storage
+MaildirStore ebi-local
+Path ~/Mail/ebi/
+Inbox ~/Mail/ebi/INBOX
+
+Channel ebi-inbox
+Master :ebi-remote:"Inbox"
+Slave :ebi-local:INBOX
+Create Both
+Expunge Both
+
+Channel ebi-archive
+Master :ebi-remote:"Archive"
+Slave :ebi-local:Archive
+Create Both
+Expunge Both
+
+Channel ebi-drafts
+Master :ebi-remote:"Drafts"
+Slave :ebi-local:Drafts
+Create Both
+Expunge Both
+
+Channel ebi-sent
+Master :ebi-remote:"Sent"
+Slave :ebi-local:Sent
+Create Both
+Expunge Both
+
+Channel ebi-trash
+Master :ebi-remote:"Trash"
+Slave :ebi-local:trash
+Create Both
+Expunge Both
+
+Channel ebi-junk
+Master :ebi-remote:"Junk"
+Slave :ebi-local:junk
+Create Both
+Expunge Both
+
+Group ebi
+Channel ebi-inbox
+Channel ebi-archive
+Channel ebi-drafts
+Channel ebi-sent
+Channel ebi-trash
+Channel ebi-junk
+
+#################################
+######## Account viu ############
+#################################
+
+IMAPAccount cam
+Host imap.hermes.cam.ac.uk
+User mbh33
+PassCmd "op get item uwqjbnzunzhqxizye4f3xobeh4 --fields password"
+SSLType STARTTLS
+Port 143
+SSLVersions TLSv1.2
+CertificateFile ~/.dotfiles/mail/cam-certificates.crt
+
+# Remote storage
+IMAPStore cam-remote
+Account cam
+
+# Local storage
+MaildirStore cam-local
+Path ~/Mail/cam/
+Inbox ~/Mail/cam/INBOX
+
+Channel cam-inbox
+Master :cam-remote:"INBOX"
+Slave :cam-local:INBOX
+Create Both
+Expunge Both
+
+Channel cam-archive
+Master :cam-remote:"Archive"
+Slave :cam-local:Archive
+Create Both
+Expunge Both
+
+Channel cam-drafts
+Master :cam-remote:"Drafts"
+Slave :cam-local:Drafts
+Create Both
+Expunge Both
+
+Channel cam-sent
+Master :cam-remote:"Sent"
+Slave :cam-local:Sent
+Create Both
+Expunge Both
+
+Channel cam-trash
+Master :cam-remote:"Trash"
+Slave :cam-local:trash
+Create Both
+Expunge Both
+
+Channel cam-spam
+Master :cam-remote:"spam"
+Slave :cam-local:spam
+Create Both
+Expunge Both
+
+Group cam
+Channel cam-inbox
+Channel cam-archive
+Channel cam-drafts
+Channel cam-sent
+Channel cam-trash
+Channel cam-spam

@@ -24,6 +24,11 @@
     ~/.alacritty.yml:            alacritty.yml
     ~/.dir_colors:               nord-dircolors/src/dir_colors
     ~/.config/terminator/config: terminator.config
+    ~/.config/neomutt/neomuttrc: neomuttrc
+    ~/.config/neomutt/settings:  neomutt.settings
+    ~/.config/neomutt/colors:    neomutt.colors
+    ~/.mbsyncrc:                 mail/mbsyncrc
+    ~/.msmtprc:                  mail/msmtprc
 
 - create:
     - ~/.vim/undo-history
