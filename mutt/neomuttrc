@@ -1,8 +1,8 @@
 # vim: filetype=muttrc
 
 # paths
-set folder = ~/Mail
-set header_cache = ~/.mutt/cache/headers
+set folder = "~/Mail"
+set header_cache = "~/.mutt/cache/headers"
 set message_cachedir = ~/.mutt/cache/bodies
 set certificate_file = /etc/ssl/certs/ca-certificates.crt
 set mailcap_path = ~/.mutt/mailcap
@@ -136,12 +136,9 @@ set sidebar_indent_string = '  ''
 set sidebar_format = "%B %* [%?N?%N / ?%S]"
 
 # Mailboxes to show in the sidebar.
-mailboxes =ALL-INBOXES
-mailboxes =ebi/INBOX =cam/INBOX
-mailboxes ="==================="
-mailboxes =ebi
+named-mailboxes "EBI" =ebi/INBOX
 mailboxes =ebi/Archive =ebi/Sent =ebi/Drafts =ebi/junk =ebi/trash
-mailboxes =cam
+named-mailboxes "CAM" =cam/INBOX
 mailboxes =cam/Archive =cam/Sent =cam/Drafts =cam/spam =cam/trash
 
 
