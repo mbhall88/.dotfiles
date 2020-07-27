@@ -63,7 +63,9 @@ set editor = "vim"
 # When set , NeoMutt will generate "format=flowed" bodies with a content type of " text/plain; format=flowed ". This format is easier to handle for some mailing software, and generally just looks like ordinary text. To actually make use of this format's features, you'll need support in your editor.
 set text_flowed
 # no dashed before sig
-#unset sig_dashes
+unset sig_dashes
+# If set , the signature will be included before any quoted or forwarded text. It is strongly recommended that you do not set this variable unless you really know what you are doing, and are prepared to take some heat from netiquette guardians.
+set sig_on_top
 # forward attachments as part of body
 unset mime_forward
 
