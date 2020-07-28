@@ -18,7 +18,9 @@ Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-fugitive'
 Plugin 'Yggdroot/indentline'
 Plugin 'itspriddle/vim-shellcheck'
-Plugin 'gabrielelana/vim-markdown'
+Plugin 'cespare/vim-toml'
+Plugin 'godlygeek/tabular'
+Plugin 'plasticboy/vim-markdown'
 Plugin 'arcticicestudio/nord-vim'
 Plugin 'rust-lang/rust.vim'
 Plugin 'tpope/vim-unimpaired'
@@ -114,3 +116,18 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 " Set the spelling language
 set spelllang=en_au,en_gb
+
+" ==========
+" Markdown plugin options - https://github.com/plasticboy/vim-markdown
+" ==========
+" Highlight YAML front matter as used by Jekyll or Hugo.
+let g:vim_markdown_frontmatter = 1
+" Highlight TOML front matter as used by Hugo.
+let g:vim_markdown_toml_frontmatter = 1
+" Highlight JSON front matter as used by Hugo.
+let g:vim_markdown_json_frontmatter = 1
+" Strikethrough uses two tildes.
+let g:vim_markdown_strikethrough = 1
+" Allow for the TOC window to auto-fit when it's possible for it to shrink. It never increases its default size (half screen), it only shrinks.
+let g:vim_markdown_toc_autofit = 1
+
