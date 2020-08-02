@@ -34,6 +34,6 @@ macro index,pager I \
   "<save-message>+cam/INBOX<enter>"  \
   "move message to the inbox"
 
-macro index,pager T \
+macro index,pager d \
   "<save-message>+cam/trash<enter>"  \
   "move message to the trash"

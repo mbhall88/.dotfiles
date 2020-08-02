@@ -34,6 +34,6 @@ macro index,pager I \
   "<save-message>+ebi/INBOX<enter>"  \
   "move message to the inbox"
 
-macro index,pager T \
+macro index,pager d \
   "<save-message>+ebi/trash<enter>"  \
-  "move message to the trash"
+  "move message to the trash (and mark as read)"
