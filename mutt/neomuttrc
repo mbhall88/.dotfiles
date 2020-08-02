@@ -124,6 +124,9 @@ auto_view text/html
 # when composing emails, use this command to get addresses from
 # the addressbook with khard first, and everything else from mu index
 set query_command = "( khard email --parsable '%s' | sed -n '1!p'; mu cfind --format=mutt-ab '%s' )"
+# allow tab completion of khard contacts
+bind editor <Tab> complete-query
+bind editor ^T    complete
 
 #===================
 # The sidebar
@@ -144,8 +147,6 @@ named-mailboxes "CAM" =cam/INBOX
 mailboxes =cam/Archive =cam/Sent =cam/Drafts =cam/spam =cam/trash
 
 
-source ~/.mutt/colours
-source ~/.mutt/bindings
 
 #==============
 # ACCOUNTS
@@ -159,3 +160,6 @@ source ~/.mutt/accounts/ebi
 # when changing into other mailboxes, use different adresses etc.
 folder-hook ebi/* source ~/.mutt/accounts/ebi
 folder-hook cam/* source ~/.mutt/accounts/cam
+
+source ~/.mutt/colours
+source ~/.mutt/bindings

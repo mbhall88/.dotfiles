@@ -34,4 +34,9 @@ macro pager \cb "<pipe-message> urlscan<Enter>" "call urlscan to extract URLs ou
 # Sync all email
 macro index,pager O "<shell-escape>mbsync -a<enter>" "run mbsync to sync all mail"
 
-
+# Mark all messages in mailbox as read - https://unix.stackexchange.com/questions/372139/macro-for-mutt-to-mark-the-whole-folder-as-read
+macro index,pager > "T ~O | ~N<Enter>;N" "Mark all messages in mailbox as read"
+# add email address to khard
+macro index,pager S \
+  "<pipe-message>khard add-email<return>" \
+  "add the sender email address to khard"
