@@ -4,3 +4,9 @@ vim/bundle/onedark.vim
 vim/bundle/*/
 
 .vagrant/rgloader/loader.rb
+mutt/tmp
+vim/spell
+vim/view
+mutt/cache
+mail/cam-certificates.crt
+mail/ebi-certificates.crt
