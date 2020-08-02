@@ -14,6 +14,7 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'joshdick/onedark.vim'
 Plugin 'scrooloose/nerdcommenter'
+Plugin 'preservim/nerdtree'
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-fugitive'
 Plugin 'Yggdroot/indentline'
