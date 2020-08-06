@@ -1,5 +1,5 @@
 #################################
-######## Account mailbox ########
+######## Account EBI ########
 #################################
 
 IMAPAccount ebi
@@ -64,7 +64,7 @@ Channel ebi-trash
 Channel ebi-junk
 
 #################################
-######## Account viu ############
+######## Account CAMBRIDGE ######
 #################################
 
 IMAPAccount cam

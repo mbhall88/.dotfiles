@@ -11,7 +11,7 @@ set record = "+ebi/Sent"
 set trash = "+ebi/trash"
 
 # Alternate email addresses.
-alternates ^michael.hall@ebi.ac.uk$ 
+alternates '^michael.hall@ebi.ac.uk$'
 
 # custom signaure
 set signature = ~/.mutt/signatures/ebi

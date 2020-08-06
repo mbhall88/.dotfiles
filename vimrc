@@ -131,4 +131,17 @@ let g:vim_markdown_json_frontmatter = 1
 let g:vim_markdown_strikethrough = 1
 " Allow for the TOC window to auto-fit when it's possible for it to shrink. It never increases its default size (half screen), it only shrinks.
 let g:vim_markdown_toc_autofit = 1
+" disable concealing markdown syntax
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_conceal_code_blocks = 0
+" don't automatically insert indent
+let g:vim_markdown_new_list_item_indent = 0
 
+" ==========
+" Nerdtree settings
+" ==========
+" show hidden (dot) files
+let NERDTreeShowHidden=1
+" open nerdtree automatically when vim starts up on a directory
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif

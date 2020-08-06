@@ -1,6 +1,6 @@
 # vim: filtetype=muttrc
 
-set from = "mbh33@ebi.ac.uk"
+set from = "mbh33@cam.ac.uk"
 set sendmail = "msmtp -a cam"
 
 # Set folders

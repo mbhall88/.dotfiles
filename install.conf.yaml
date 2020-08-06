@@ -27,6 +27,7 @@
     ~/.mbsyncrc:                 mail/mbsyncrc
     ~/.msmtprc:                  mail/msmtprc
     ~/.mutt:                     mutt
+    ~/.config/khard/khard.conf:  mail/khard.conf
 
 - create:
     - ~/.vim/undo-history
