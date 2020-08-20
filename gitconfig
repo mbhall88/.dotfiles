@@ -7,3 +7,4 @@
     co = checkout
     br = branch
     last = log -1 HEAD
+    abbrev = log --abbrev-commit
