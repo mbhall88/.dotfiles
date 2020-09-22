@@ -89,7 +89,9 @@ case "$HOSTNAME" in
     *)
         # setup pyenv on non-cluster machines
         export PYENV_ROOT="${HOME}/.pyenv"
-
+        
+        export GOPATH="${HOME}/go"
+        ;;
 esac
 
 
