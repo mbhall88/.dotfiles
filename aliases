@@ -35,8 +35,7 @@ case "$HOSTNAME" in
         bsub_gpu() {
             mem="${1:-4}"
             mem=$((mem * 1000))
-            shell=$(sh -c 'ps -p $$ -o ppid=' | xargs -I'{}' readlink -f '/proc/{}/exe')
-            bsub -gpu - -q research-rh74 -R "select[mem>$mem] rusage[mem=$mem]" -M"$mem" -P gpu -Is "$shell"
+            bsub -gpu - -q research-rh74 -R "select[mem>$mem] rusage[mem=$mem]" -M"$mem" -P gpu -Is zsh
         }
         # function to start an interactive jobs with given memory and threads
         # usage: bsub_i <mem_in_gb> <threads>
@@ -44,8 +43,7 @@ case "$HOSTNAME" in
             mem="${1:-1}"
             mem=$((mem * 1000))
             threads="${2:-1}"
-            shell=$(sh -c 'ps -p $$ -o ppid=' | xargs -I'{}' readlink -f '/proc/{}/exe')
-            bsub -Is -n "$threads" -R "span[hosts=1] select[mem>${mem}] rusage[mem=${mem}]" -M"$mem" "$shell"
+            bsub -Is -n "$threads" -R "span[hosts=1] select[mem>${mem}] rusage[mem=${mem}]" -M"$mem" zsh
         }
         ;;
 esac
