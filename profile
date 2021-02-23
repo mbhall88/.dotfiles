@@ -28,6 +28,48 @@
 # Section for loading profile for cluster
 
 case "$HOSTNAME" in
+    *codon*)
+        # Source global definitions
+        if [ -f /etc/bashrc ]; then
+        	. /etc/bashrc
+        fi
+
+        # load modules
+        module load singularity-3.7.0-gcc-9.3.0-dp5ffrp \
+          gcc-9.3.0-gcc-9.3.0-lnsweiq \
+          cmake-3.19.2-gcc-9.3.0-w2svpma \
+          zlib-1.2.11-gcc-9.3.0-7oy27qp
+
+        export LUSTRE="/hps/nobackup/iqbal/mbhall/"
+        export NFS=""/nfs/research/zi/mbhall/"
+        export SOFTWAREDIR="${NFS}/Software"
+        export LD_LIBRARY_PATH="${SOFTWAREDIR}/lib:$LD_LIBRARY_PATH"
+        export PKG_CONFIG_PATH="${SOFTWAREDIR}/lib/pkgconfig/:$PKG_CONFIG_PATH"
+        export PATH="${SOFTWAREDIR}/bin/:$PATH"
+
+        # required to run jupyter
+        export XDG_RUNTIME_DIR=""
+
+        # set the singularity cache directory to where I want it rather than the default
+        export SINGULARITY_CACHEDIR="${SOFTWAREDIR}/.singularity_cache/"
+
+        # allow user and group read, write, and execute permissions on all files/dirs I create
+        umask 002
+
+        alias lustre="cd ${LUSTRE}"
+        alias nfs="cd ${NFS}"
+
+        # farmpy needs to know what memory units LSF uses
+        export FARMPY_LSF_MEMORY_UNITS="MB"
+
+        # pyenv setup
+        export PYENV_ROOT="${SOFTWAREDIR}/.pyenv"
+
+        # prevent bash overridding byobu session names.
+        # see https://stackoverflow.com/questions/28475335/byobu-renames-windows-in-ssh-session
+        unset PROMPT_COMMAND
+        ;;
+
     *noah* | *yoda* | *gpu*)
 
         # Source global definitions
@@ -89,7 +131,7 @@ case "$HOSTNAME" in
     *)
         # setup pyenv on non-cluster machines
         export PYENV_ROOT="${HOME}/.pyenv"
-        
+
         export GOPATH="${HOME}/go"
         ;;
 esac
@@ -160,8 +202,6 @@ export BAT_THEME="Nord"
 
 # set location of starship config https://starship.rs/
 export STARSHIP_CONFIG="${HOME}/.starship.toml"
-
-export PATH="$HOME/.poetry/bin:$PATH"
 
 # set nord theme as default for dircolors - https://www.nordtheme.com/docs/ports/dircolors/
 if [ -r "${HOME}/.dir_colors" ]; then
