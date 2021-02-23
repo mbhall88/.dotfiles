@@ -41,7 +41,7 @@ case "$HOSTNAME" in
           zlib-1.2.11-gcc-9.3.0-7oy27qp
 
         export LUSTRE="/hps/nobackup/iqbal/mbhall/"
-        export NFS=""/nfs/research/zi/mbhall/"
+        export NFS="/nfs/research/zi/mbhall/"
         export SOFTWAREDIR="${NFS}/Software"
         export LD_LIBRARY_PATH="${SOFTWAREDIR}/lib:$LD_LIBRARY_PATH"
         export PKG_CONFIG_PATH="${SOFTWAREDIR}/lib/pkgconfig/:$PKG_CONFIG_PATH"
