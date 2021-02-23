@@ -73,6 +73,9 @@ case "$HOSTNAME" in
         export CARGO_HOME="${SOFTWAREDIR}/.cargo"
         export RUSTUP_HOME="${SOFTWAREDIR}/.rust"
         export PATH="${PATH}:${CARGO_HOME}/bin"
+
+        # add conda to END of path
+        export PATH="${PATH}:${SOFTWAREDIR}/miniconda3/bin"
         ;;
 
     *noah* | *yoda* | *gpu*)
