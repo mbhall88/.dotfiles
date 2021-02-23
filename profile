@@ -68,6 +68,11 @@ case "$HOSTNAME" in
         # prevent bash overridding byobu session names.
         # see https://stackoverflow.com/questions/28475335/byobu-renames-windows-in-ssh-session
         unset PROMPT_COMMAND
+
+        # rust installed as per https://github.com/rust-lang/rustup/issues/618#issuecomment-570951132
+        export CARGO_HOME="${SOFTWAREDIR}/.cargo"
+        export RUSTUP_HOME="${SOFTWAREDIR}/.rust"
+        export PATH="${PATH}:${CARGO_HOME}/bin"
         ;;
 
     *noah* | *yoda* | *gpu*)
@@ -172,7 +177,9 @@ fi
 export PATH="$PATH:/usr/local/go/bin"
 
 # Add rust cargo-installed programs in PATH
-export PATH="$HOME/.cargo/bin:$PATH"
+if [ -d "${HOME}/.cargo/bin" ]; then
+    export PATH="$HOME/.cargo/bin:$PATH"
+fi
 
 # Preferred editor for local and remote sessions
 export VISUAL=vim
