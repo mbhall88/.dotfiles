@@ -90,16 +90,16 @@ case "$HOSTNAME" in
 
         case "$HOSTNAME" in
             *noah*)
-                LUSTRE="/hps/nobackup/research/zi/mbhall"
-                NFS="/nfs/research1/zi/mbhall"
+                export LUSTRE="/hps/nobackup/research/zi/mbhall"
+                export NFS="/nfs/research1/zi/mbhall"
                 export ftp_site=/ebi/ftp/private/madagascox
                 export SOFTWAREDIR="${NFS}/Software"
                 export LD_LIBRARY_PATH="${SOFTWAREDIR}/lib:$LD_LIBRARY_PATH"
                 export PKG_CONFIG_PATH="${SOFTWAREDIR}/lib/pkgconfig/:$PKG_CONFIG_PATH"
                 ;;
             *yoda*)
-                LUSTRE="/hps/nobackup/iqbal/mbhall"
-                NFS="/nfs/leia/research/iqbal/mbhall"
+                export LUSTRE="/hps/nobackup/iqbal/mbhall"
+                export NFS="/nfs/leia/research/iqbal/mbhall"
                 export SOFTWAREDIR="${NFS}/Software"
                 ;;
             esac
@@ -147,12 +147,12 @@ esac
 
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
+    export PATH="$HOME/bin:$PATH"
 fi
 
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/.local/bin" ] ; then
-    PATH="$HOME/.local/bin:$PATH"
+    export PATH="$HOME/.local/bin:$PATH"
 fi
 
 OS=$(uname -s)
