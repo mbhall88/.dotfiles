@@ -37,8 +37,9 @@ case "$HOSTNAME" in
         # load modules
         module load singularity-3.7.0-gcc-9.3.0-dp5ffrp \
           gcc-9.3.0-gcc-9.3.0-lnsweiq \
-          cmake-3.19.2-gcc-9.3.0-w2svpma \
-          zlib-1.2.11-gcc-9.3.0-7oy27qp
+          cmake-3.19.5-gcc-9.3.0-z5ntmum \
+          zlib-1.2.11-gcc-9.3.0-7oy27qp \
+          cuda-11.1.1-gcc-9.3.0-oqr2b7d
 
         export LUSTRE="/hps/nobackup/iqbal/mbhall/"
         export NFS="/nfs/research/zi/mbhall/"
