@@ -142,6 +142,9 @@ case "$HOSTNAME" in
         export PYENV_ROOT="${HOME}/.pyenv"
 
         export GOPATH="${HOME}/go"
+
+        # add conda to END of path
+        export PATH="${PATH}:${HOME}/Programs/miniconda3/bin"
         ;;
 esac
 
