@@ -75,8 +75,12 @@ case "$HOSTNAME" in
         export RUSTUP_HOME="${SOFTWAREDIR}/.rust"
         export PATH="${PATH}:${CARGO_HOME}/bin"
 
+        # fast access software dir
+        export FASTSW_DIR="/hps/software/users/iqbal/mbhall"
+        export PATH="${FASTSW_DIR}/bin/:$PATH"
+    
         # add conda to END of path
-        export PATH="${PATH}:${SOFTWAREDIR}/miniconda3/bin"
+        export PATH="${PATH}:${FASTSW_DIR}/miniconda3/bin"
         ;;
 
     *noah* | *yoda* | *gpu*)
