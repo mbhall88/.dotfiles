@@ -57,7 +57,6 @@ Vagrant.configure(2) do |config|
         python debootstrap x11-apps zlib1g-dev libgl1-mesa-glx libboost-all-dev libarchive-dev"
     apt-get update
     pip install --upgrade pip
-    pip install pipenv
 
     for p in $PKGS; do
       apt-get install -y $p
@@ -104,14 +103,6 @@ Vagrant.configure(2) do |config|
         cd ./builddir && \
         make && \
         make install
-    # ==========================
-
-    # ==========================
-    # INTSALL NODEJS
-    # curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
-    apt-get install -y nodejs npm
-    ln -s `which nodejs` /usr/bin/node
-    pip3 install tldr
     # ==========================
 
     # ==========================
