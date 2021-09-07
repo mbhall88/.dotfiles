@@ -22,12 +22,9 @@ scan_timeout = 10
 
 # The character module shows a character beside where the text is entered in your terminal.
 [character]
-symbol = "❯"  # The symbol used before the text input in the prompt.
-error_symbol= "✖"  # The symbol used before text input if the previous command failed.
-use_symbol_for_status = true  # Indicate error status by changing the symbol.
+success_symbol = "[❯](bold green) "  # The symbol used before the text input in the prompt.
+error_symbol= "[✗](bold red) "  # The symbol used before text input if the previous command failed.
 vicmd_symbol = "❮"  # The symbol used before the text input in the prompt if shell is in vim normal mode.
-style_success = "bold green"  # The style used if the last command was successful.
-style_failure = "bold red"  # The style used if the last command failed.
 disabled = false  # Disables the character module.
 
 # The cmd_duration module shows how long the last command took to execute.
