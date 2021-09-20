@@ -48,6 +48,9 @@ fpath=( "$HOME/.zsh/zfunctions" $fpath )
 # initialise starship - https://starship.rs/
 eval "$(starship init zsh)"
 
+# initialise zoxide - https://github.com/ajeetdsouza/zoxide
+eval "$(zoxide init zsh)"
+
 # add pyenv to path
 export PATH="$PYENV_ROOT/bin:$PATH"
 if command -v pyenv 1>/dev/null 2>&1; then
