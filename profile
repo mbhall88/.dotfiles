@@ -221,6 +221,9 @@ export BAT_THEME="Nord"
 # set location of starship config https://starship.rs/
 export STARSHIP_CONFIG="${HOME}/.starship.toml"
 
+# use pyenv python for byobu
+export BYOBU_PYTHON='/usr/bin/env python'
+
 # set nord theme as default for dircolors - https://www.nordtheme.com/docs/ports/dircolors/
 if [ -r "${HOME}/.dir_colors" ]; then
     if [ "$OS" = Darwin ]; then
