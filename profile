@@ -232,3 +232,5 @@ if [ -r "${HOME}/.dir_colors" ]; then
         eval "$(dircolors ~/.dir_colors)"
     fi
 fi
+
+export PATH="$HOME/.poetry/bin:$PATH"
