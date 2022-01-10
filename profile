@@ -28,6 +28,25 @@
 # Section for loading profile for cluster
 
 case "$HOSTNAME" in
+    *awoonga*)
+        export SOFTWAREDIR="/home/uqmhal11/sw"
+        export LD_LIBRARY_PATH="${SOFTWAREDIR}/lib:$LD_LIBRARY_PATH"
+        export PKG_CONFIG_PATH="${SOFTWAREDIR}/lib/pkgconfig/:$PKG_CONFIG_PATH"
+        export PATH="${SOFTWAREDIR}/bin/:$PATH"
+        # set the singularity cache directory to where I want it rather than the default
+        export SINGULARITY_CACHEDIR="${SOFTWAREDIR}/.singularity_cache/"
+        # load modules
+        module load singularity/3.5.0
+        # allow user and group read, write, and execute permissions on all files/dirs I create
+        umask 002
+        # rust installed as per https://github.com/rust-lang/rustup/issues/618#issuecomment-570951132
+        export CARGO_HOME="${SOFTWAREDIR}/.cargo"
+        export RUSTUP_HOME="${SOFTWAREDIR}/.rust"
+        export PATH="${PATH}:${CARGO_HOME}/bin"
+        # add conda to END of path
+        export PATH="${PATH}:${SOFTWAREDIR}/miniconda3/bin"
+        . "/home/uqmhal11/sw/.cargo/env"
+        ;;
     *codon*)
         # Source global definitions
         if [ -f /etc/bashrc ]; then

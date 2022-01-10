@@ -87,3 +87,25 @@ if command -v pyenv 1>/dev/null 2>&1; then
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
 fi
+
+# inistalise zoxide
+if command -v zoxide 1>/dev/null 2>&1; then
+    eval "$(zoxide init bash)"
+fi
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/uqmhal11/sw/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/uqmhal11/sw/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/uqmhal11/sw/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/uqmhal11/sw/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+. "/home/uqmhal11/sw/.cargo/env"
