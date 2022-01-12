@@ -108,4 +108,3 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-. "/home/uqmhal11/sw/.cargo/env"

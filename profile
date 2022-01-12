@@ -31,7 +31,7 @@ if [ -z "$HOSTNAME" ] && [ ! -z $HOST ]; then
 fi
 
 case "$HOSTNAME" in
-    *coinlab*)
+    *coinlab* | *awoonga* | *wiener*)
         export SOFTWAREDIR="$HOME/sw"
         export LD_LIBRARY_PATH="${SOFTWAREDIR}/lib:$LD_LIBRARY_PATH"
         export PKG_CONFIG_PATH="${SOFTWAREDIR}/lib/pkgconfig/:$PKG_CONFIG_PATH"
@@ -42,30 +42,24 @@ case "$HOSTNAME" in
         export CARGO_HOME="${SOFTWAREDIR}/.cargo"
         export RUSTUP_HOME="${SOFTWAREDIR}/.rust"
         export PATH="${PATH}:${CARGO_HOME}/bin"
-        # remove system conda from PATH
-        export PATH=$(echo $PATH | sed -e 's;:\?/opt/conda/bin;;' -e 's;/opt/conda/bin:\?;;')
+        . "${CARGO_HOME}/env"
+
+        case "$HOSTNAME" in
+            *wiener*)
+                module load singularity/3.4.1
+                ;;
+            *awoonga*)
+                # load modules
+                module load singularity/3.5.0
+                ;;
+            *coinlab*)
+                # remove system conda from PATH
+                export PATH=$(echo $PATH | sed -e 's;:\?/opt/conda/bin;;' -e 's;/opt/conda/bin:\?;;')
+                ;;
+        esac
         # add conda to path
         export PATH="${SOFTWAREDIR}/miniconda3/bin:${PATH}"
-        . "/home/michaelhall/sw/.cargo/env"
-        ;;
-    *awoonga*)
-        export SOFTWAREDIR="$HOME/sw"
-        export LD_LIBRARY_PATH="${SOFTWAREDIR}/lib:$LD_LIBRARY_PATH"
-        export PKG_CONFIG_PATH="${SOFTWAREDIR}/lib/pkgconfig/:$PKG_CONFIG_PATH"
-        export PATH="${SOFTWAREDIR}/bin/:$PATH"
-        # set the singularity cache directory to where I want it rather than the default
-        export SINGULARITY_CACHEDIR="${SOFTWAREDIR}/.singularity_cache/"
-        # load modules
-        module load singularity/3.5.0
-        # allow user and group read, write, and execute permissions on all files/dirs I create
-        umask 002
-        # rust installed as per https://github.com/rust-lang/rustup/issues/618#issuecomment-570951132
-        export CARGO_HOME="${SOFTWAREDIR}/.cargo"
-        export RUSTUP_HOME="${SOFTWAREDIR}/.rust"
-        export PATH="${PATH}:${CARGO_HOME}/bin"
-        # add conda to END of path
-        export PATH="${PATH}:${SOFTWAREDIR}/miniconda3/bin"
-        . "/home/uqmhal11/sw/.cargo/env"
+
         ;;
     *codon*)
         # Source global definitions
