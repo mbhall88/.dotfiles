@@ -47,6 +47,7 @@ case "$HOSTNAME" in
         case "$HOSTNAME" in
             *wiener*)
                 module load singularity/3.4.1
+                export SQUEUE_FORMAT="%.18i %.9P %.20j %.8u %.2t %.10M %.6D %.20R %q"
                 ;;
             *awoonga*)
                 # load modules
@@ -55,6 +56,7 @@ case "$HOSTNAME" in
             *coinlab*)
                 # remove system conda from PATH
                 export PATH=$(echo $PATH | sed -e 's;:\?/opt/conda/bin;;' -e 's;/opt/conda/bin:\?;;')
+                export SQUEUE_FORMAT="%.18i %.9P %.20j %.8u %.2t %.10M %.6D %.20R %q"
                 ;;
         esac
         # add conda to path
