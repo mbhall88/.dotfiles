@@ -45,6 +45,13 @@ fi
 
 fpath=( "$HOME/.zsh/zfunctions" $fpath )
 
+# =================================
+# auto-suggestion configuration
+
+# will first try to find a suggestion from your history, but, if it can't find a match, will find a suggestion from the completion engine.
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+# ====================================
+
 # initialise starship - https://starship.rs/
 eval "$(starship init zsh)"
 
@@ -55,6 +62,7 @@ eval "$(zoxide init zsh)"
 export PATH="$PYENV_ROOT/bin:$PATH"
 if command -v pyenv 1>/dev/null 2>&1; then
     eval "$(pyenv init -)"
+    eval "$(pyenv init --path)"
     eval "$(pyenv virtualenv-init -)"
 fi
 
