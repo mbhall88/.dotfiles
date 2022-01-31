@@ -31,7 +31,7 @@ if [ -z "$HOSTNAME" ] && [ ! -z $HOST ]; then
 fi
 
 case "$HOSTNAME" in
-    *coinlab* | *awoonga* | *wiener*)
+    *coinlab* | *awoonga* | *wiener* | *tinaroo*)
         export SOFTWAREDIR="$HOME/sw"
         export LD_LIBRARY_PATH="${SOFTWAREDIR}/lib:$LD_LIBRARY_PATH"
         export PKG_CONFIG_PATH="${SOFTWAREDIR}/lib/pkgconfig/:$PKG_CONFIG_PATH"
@@ -49,7 +49,7 @@ case "$HOSTNAME" in
                 module load singularity/3.4.1
                 export SQUEUE_FORMAT="%.18i %.9P %.20j %.8u %.2t %.10M %.6D %.20R %q"
                 ;;
-            *awoonga*)
+            *awoonga* | *tinaroo*)
                 # load modules
                 module load singularity/3.5.0
                 ;;
