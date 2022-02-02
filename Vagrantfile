@@ -54,7 +54,7 @@ Vagrant.configure(2) do |config|
   # Install required programs
   config.vm.provision "shell", inline: <<-SHELL
     PKGS="language-pack-en git vim make cmake build-essential python3-pip\
-        python debootstrap x11-apps zlib1g-dev libgl1-mesa-glx libboost-all-dev libarchive-dev"
+        python debootstrap x11-apps zlib1g-dev libgl1-mesa-glx libarchive-dev"
     apt-get update
     pip install --upgrade pip
 
@@ -132,6 +132,20 @@ Vagrant.configure(2) do |config|
     "${HOME}/miniconda"/bin/activate
     "${HOME}/miniconda"/condabin/conda init zsh
 
+    # ==========================
+    # INSTALL RUST
+    curl https://sh.rustup.rs -sSf | sh -s -- -y
+    source $HOME/.cargo/env
+    # ==========================
+
+    # ==========================
+    # Install rust utilities
+    cargo install exa ripgrep du-dust zoxide fd-find
+    # ==========================
+
+    # ==========================
+    # INSTALL STARSHIP
+    sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- -y
 
   SHELL
 end
