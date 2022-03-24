@@ -31,7 +31,7 @@ if [ -z "$HOSTNAME" ] && [ ! -z $HOST ]; then
 fi
 
 case "$HOSTNAME" in
-    *coinlab* | *awoonga* | *wiener* | *tinaroo*)
+    *coinlab* | *awoonga* | *wiener* | *tinaroo* | *spartan*)
         export SOFTWAREDIR="$HOME/sw"
         export LD_LIBRARY_PATH="${SOFTWAREDIR}/lib:$LD_LIBRARY_PATH"
         export PKG_CONFIG_PATH="${SOFTWAREDIR}/lib/pkgconfig/:$PKG_CONFIG_PATH"
@@ -44,10 +44,11 @@ case "$HOSTNAME" in
         export PATH="${PATH}:${CARGO_HOME}/bin"
         . "${CARGO_HOME}/env"
 
+        export SQUEUE_FORMAT="%.18i %.9P %.20j %.8u %.2t %.10M %.6D %.20R %q"
+
         case "$HOSTNAME" in
             *wiener*)
                 module load singularity/3.4.1
-                export SQUEUE_FORMAT="%.18i %.9P %.20j %.8u %.2t %.10M %.6D %.20R %q"
                 ;;
             *awoonga* | *tinaroo*)
                 # load modules
@@ -56,7 +57,9 @@ case "$HOSTNAME" in
             *coinlab*)
                 # remove system conda from PATH
                 export PATH=$(echo $PATH | sed -e 's;:\?/opt/conda/bin;;' -e 's;/opt/conda/bin:\?;;')
-                export SQUEUE_FORMAT="%.18i %.9P %.20j %.8u %.2t %.10M %.6D %.20R %q"
+                ;;
+            *spartan*)
+                module load git/2.28.0-nodocs singularity/3.8.5
                 ;;
         esac
         # add conda to path
@@ -113,7 +116,7 @@ case "$HOSTNAME" in
         # fast access software dir
         export FASTSW_DIR="/hps/software/users/iqbal/mbhall"
         export PATH="${FASTSW_DIR}/bin/:$PATH"
-    
+
         # add conda to END of path
         export PATH="${PATH}:${FASTSW_DIR}/miniconda3/bin"
         ;;
