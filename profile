@@ -273,4 +273,3 @@ if [ -r "${HOME}/.dir_colors" ]; then
 fi
 
 export PATH="$HOME/.poetry/bin:$PATH"
-. "/home/mihall/sw/.cargo/env"
