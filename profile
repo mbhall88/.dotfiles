@@ -30,6 +30,9 @@ if [ -z "$HOSTNAME" ] && [ ! -z $HOST ]; then
     export HOSTNAME="$HOST"
 fi
 
+# setup pyenv on non-cluster machines
+export PYENV_ROOT="${HOME}/.pyenv"
+
 case "$HOSTNAME" in
     *coinlab* | *awoonga* | *wiener* | *tinaroo* | *spartan*)
         export SOFTWAREDIR="$HOME/sw"
@@ -59,7 +62,7 @@ case "$HOSTNAME" in
                 export PATH=$(echo $PATH | sed -e 's;:\?/opt/conda/bin;;' -e 's;/opt/conda/bin:\?;;')
                 ;;
             *spartan*)
-                module load git/2.28.0-nodocs singularity/3.8.5
+                module load git/2.23.0-nodocs singularity/3.8.5
                 ;;
         esac
         # add conda to path
@@ -180,8 +183,6 @@ case "$HOSTNAME" in
         unset PROMPT_COMMAND
         ;;
     *)
-        # setup pyenv on non-cluster machines
-        export PYENV_ROOT="${HOME}/.pyenv"
 
         export GOPATH="${HOME}/go"
 
@@ -272,3 +273,4 @@ if [ -r "${HOME}/.dir_colors" ]; then
 fi
 
 export PATH="$HOME/.poetry/bin:$PATH"
+. "/home/mihall/sw/.cargo/env"
