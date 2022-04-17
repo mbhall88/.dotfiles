@@ -25,6 +25,8 @@ Plugin 'plasticboy/vim-markdown'
 Plugin 'arcticicestudio/nord-vim'
 Plugin 'rust-lang/rust.vim'
 Plugin 'tpope/vim-unimpaired'
+Plugin 'https://github.com/snakemake/snakemake.git', {'rtp': 'misc/vim/'}
+Plugin 'doums/darcula'
 
 " OSX stupid backspace fix
 " set backspace=indent,eol,start
@@ -53,7 +55,7 @@ filetype plugin indent on " required
 " endif
 
 syntax on
-colorscheme nord
+colorscheme darcula
 
 " Show line numbers
 set number
