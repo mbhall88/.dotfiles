@@ -58,13 +58,6 @@ eval "$(starship init zsh)"
 # initialise zoxide - https://github.com/ajeetdsouza/zoxide
 eval "$(zoxide init zsh)"
 
-# add pyenv to path
-export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init --path)"
-    eval "$(pyenv virtualenv-init -)"
-fi
-
 # add rbenv to path
 export PATH="$HOME/.rbenv/bin:$PATH"
 if [ -x "$(command -v rbenv)" ]; then
