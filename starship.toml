@@ -106,7 +106,7 @@ disabled = false
 [python]
 symbol = "🐍 "
 format = "via [${symbol}${pyenv_prefix}(${version})]($style) "
-pyenv_version_name = true  # Use pyenv to get Python version
+pyenv_version_name = false  # Use pyenv to get Python version
 pyenv_prefix = "pyenv "  # Prefix before pyenv version display (default display is pyenv MY_VERSION)
 style = "bold yellow"
 disabled = false

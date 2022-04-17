@@ -30,9 +30,6 @@ if [ -z "$HOSTNAME" ] && [ ! -z $HOST ]; then
     export HOSTNAME="$HOST"
 fi
 
-# setup pyenv on non-cluster machines
-export PYENV_ROOT="${HOME}/.pyenv"
-
 case "$HOSTNAME" in
     *coinlab* | *awoonga* | *wiener* | *tinaroo* | *spartan*)
         export SOFTWAREDIR="$HOME/sw"
@@ -103,9 +100,6 @@ case "$HOSTNAME" in
 
         # farmpy needs to know what memory units LSF uses
         export FARMPY_LSF_MEMORY_UNITS="MB"
-
-        # pyenv setup
-        export PYENV_ROOT="${SOFTWAREDIR}/.pyenv"
 
         # prevent bash overridding byobu session names.
         # see https://stackoverflow.com/questions/28475335/byobu-renames-windows-in-ssh-session
@@ -186,8 +180,8 @@ case "$HOSTNAME" in
 
         export GOPATH="${HOME}/go"
 
-        # add conda to END of path
-        export PATH="${PATH}:${HOME}/Programs/miniconda3/bin"
+        # add conda to PATH
+        export PATH="${HOME}/Programs/miniconda3/bin:${PATH}"
         ;;
 esac
 
@@ -234,12 +228,6 @@ fi
 # Preferred editor for local and remote sessions
 export VISUAL=vim
 export EDITOR="$VISUAL"
-
-# add pulse sercure to LD PATH
-if [ -d /usr/local/pulse ]; then
-    export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/pulse"
-    export PATH="/usr/local/pulse:$PATH"
-fi
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
