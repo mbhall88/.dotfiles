@@ -43,7 +43,8 @@ case "$HOSTNAME" in
         bsub_gpu() {
             mem="${1:-4}"
             mem=$((mem * 1000))
-            bsub -gpu - -R "select[mem>$mem] rusage[mem=$mem]" -M"$mem" -q gpu -Is zsh
+            n="${2:-1}"
+            bsub -gpu "num=$n" -R "select[mem>$mem] rusage[mem=$mem]" -M"$mem" -q gpu -Is zsh
         }
         ;;
     *noah* | *yoda*)
