@@ -8,6 +8,7 @@
     br = branch
     last = log -1 HEAD
     abbrev = log --abbrev-commit
+	sa = stash apply
 [pull]
 	rebase = true
 [filter "lfs"]
