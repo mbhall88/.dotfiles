@@ -69,8 +69,8 @@ case "$HOSTNAME" in
                 # manually set the project dirs to bind
                 SINGULARITY_BIND=""
                 for prj in ${PROJECTS}; do
-                    SINGULARITY_BIND="${SINGULARITY_BIND}/data/scratch/projects/{$prj},"
-                    SINGULARITY_BIND="${SINGULARITY_BIND}/data/gpfs/projects/$prj,"
+                    SINGULARITY_BIND="${SINGULARITY_BIND}/data/scratch/projects/${prj},"
+                    SINGULARITY_BIND="${SINGULARITY_BIND}/data/gpfs/projects/${prj},"
                 done
                 export SINGULARITY_BIND="${SINGULARITY_BIND%?}"  # remove trailing comma
                 ;;
