@@ -85,6 +85,9 @@ case "$HOSTNAME" in
         export LD_LIBRARY_PATH="${SOFTWAREDIR}/lib:$LD_LIBRARY_PATH"
         export PKG_CONFIG_PATH="${SOFTWAREDIR}/lib/pkgconfig/:$PKG_CONFIG_PATH"
         export PATH="${SOFTWAREDIR}/bin/:$PATH"
+        # avoids singularity failing
+        export SINGULARITY_CONTAIN=TRUE
+        export SINGULARITY_BINDPATH="$(dirname $NFS),$(dirname $LUSTRE),/homes,/tmp"
 
         # required to run jupyter
         export XDG_RUNTIME_DIR=""
