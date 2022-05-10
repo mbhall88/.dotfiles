@@ -60,6 +60,11 @@ case "$HOSTNAME" in
                 ;;
             *spartan*)
                 module load git/2.23.0-nodocs singularity/3.8.5
+                export PROJID="punim1068"
+                export PROJSCRATCH="/data/scratch/projects/${PROJID}"
+                export PROJGPFS="/data/gpfs/projects/${PROJID}"
+                # manually set the project scratch dir and data dir to bind
+                export SINGULARITY_BIND="${PROJGPFS},${PROJSCRATCH}${SINGULARITY_BIND:+,${SINGULARITY_BIND}}"
                 ;;
         esac
         # add conda to path
