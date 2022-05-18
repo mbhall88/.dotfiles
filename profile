@@ -44,7 +44,13 @@ case "$HOSTNAME" in
         export PATH="${PATH}:${CARGO_HOME}/bin"
         . "${CARGO_HOME}/env"
 
-        export SQUEUE_FORMAT="%.18i %.9P %.20j %.8u %.2t %.10M %.6D %.20R %q"
+        # set the default squeue format - https://slurm.schedmd.com/squeue.html#OPT_format
+        export SQUEUE_FORMAT="%.10i %.20j %.10T %.10P %.20R %.10q %.17S %.10l %.10L %.6m" 
+        export SQUEUE_USERS="$USER"
+        # set the default output format for sacct - https://slurm.schedmd.com/sacct.html#SECTION_Job-Accounting-Fields
+        export SACCT_FORMAT="JobID,JobName%20,ExitCode,State,ReqMem,MaxRSS,Timelimit,Elapsed,Start,End"
+        # set the default slurm time format - https://slurm.schedmd.com/sacct.html#OPT_SLURM_TIME_FORMAT
+        export SLURM_TIME_FORMAT="%X %d/%m/%y"
 
         case "$HOSTNAME" in
             *wiener*)
@@ -73,6 +79,7 @@ case "$HOSTNAME" in
                     SINGULARITY_BIND="${SINGULARITY_BIND}/data/gpfs/projects/${prj},"
                 done
                 export SINGULARITY_BIND="${SINGULARITY_BIND%?}"  # remove trailing comma
+
                 ;;
         esac
         # add conda to path
