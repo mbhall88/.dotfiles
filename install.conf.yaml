@@ -7,29 +7,30 @@
 - clean:                         ['~']
 
 - link:
-    ~/.aliases:                  aliases
-    ~/.tmux.conf:                tmux.conf
-    ~/.byobu/.tmux.conf:         tmux.conf
-    ~/.vim:                      vim
-    ~/.vimrc:                    vimrc
-    ~/.zshrc:                    zshrc
-    ~/.hyper.js:                 hyper.js
-    ~/.ideavimrc:                ideavimrc
-    ~/.gitconfig:                gitconfig
-    ~/.bashrc:                   bashrc
-    ~/.zsh:                      zsh
-    ~/.ssh/config:               ssh.config
-    ~/.profile:                  profile
-    ~/.starship.toml:            starship.toml
-    ~/.alacritty.yml:            alacritty.yml
-    ~/.dir_colors:               nord-dircolors/src/dir_colors
-    ~/.config/terminator/config: terminator.config
-    ~/.mbsyncrc:                 mail/mbsyncrc
-    ~/.msmtprc:                  mail/msmtprc
-    ~/.mutt:                     mutt
-    ~/.config/khard/khard.conf:  mail/khard.conf
-    ~/.config/gitui/key_config.ron: gitui.vim_style_key_config.ron
-    ~/.condarc:                  condarc
+    ~/.aliases:                        aliases
+    ~/.tmux.conf:                      tmux.conf
+    ~/.byobu/.tmux.conf:               tmux.conf
+    ~/.vim:                            vim
+    ~/.vimrc:                          vimrc
+    ~/.zshrc:                          zshrc
+    ~/.hyper.js:                       hyper.js
+    ~/.ideavimrc:                      ideavimrc
+    ~/.gitconfig:                      gitconfig
+    ~/.bashrc:                         bashrc
+    ~/.zsh:                            zsh
+    ~/.ssh/config:                     ssh.config
+    ~/.profile:                        profile
+    ~/.starship.toml:                  starship.toml
+    ~/.alacritty.yml:                  alacritty.yml
+    ~/.dir_colors:                     nord-dircolors/src/dir_colors
+    ~/.config/terminator/config:       terminator.config
+    ~/.mbsyncrc:                       mail/mbsyncrc
+    ~/.msmtprc:                        mail/msmtprc
+    ~/.mutt:                           mutt
+    ~/.config/khard/khard.conf:        mail/khard.conf
+    ~/.config/gitui/key_config.ron:    gitui.vim_style_key_config.ron
+    ~/.condarc:                        condarc
+    ~/.config/matplotlib/matplotlibrc: matplotlibrc
 
 - create:
     - ~/.vim/undo-history
