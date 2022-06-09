@@ -71,38 +71,36 @@ Vagrant.configure(2) do |config|
 
     # ==========================
     # INSTALL SINGULARITY and GO
-    apt-get update && apt-get install -y \
-        libssl-dev \
-        uuid-dev \
-        libgpgme11-dev \
-        squashfs-tools \
+    # https://github.com/apptainer/singularity/blob/master/INSTALL.md
+    # Ensure repositories are up-to-date
+    sudo apt-get update
+    # Install debian packages for dependencies
+    sudo apt-get install -y \
+        build-essential \
         libseccomp-dev \
         pkg-config \
-        git \
+        squashfs-tools \
         cryptsetup \
-        curl
+        curl wget git
 
     # GO
-    export VERSION=1.13.7 OS=linux ARCH=amd64
-    wget -O - https://dl.google.com/go/go${VERSION}.${OS}-${ARCH}.tar.gz | tar -C /usr/local -xzf -
+    export VERSION=1.17.3 OS=linux ARCH=amd64
+    wget -O /tmp/go${GOVERSION}.${OS}-${ARCH}.tar.gz https://dl.google.com/go/go${GOVERSION}.${OS}-${ARCH}.tar.gz 
+    tar -C /usr/local -xzf /tmp/go${GOVERSION}.${OS}-${ARCH}.tar.gz
     export GOPATH=${HOME}/go
     export PATH=/usr/local/go/bin:$PATH
 
-    curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh |
-        sh -s -- -b $(go env GOPATH)/bin v1.15.0
+    curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh |
+        sh -s -- -b $(go env GOPATH)/bin v1.43.0
+
+    export PATH=$PATH:$(go env GOPATH)/bin
 
     # SINGULARITY
-    mkdir -p ${GOPATH}/src/github.com/sylabs && \
-        cd ${GOPATH}/src/github.com/sylabs && \
-        git clone https://github.com/sylabs/singularity.git && \
-        cd singularity
-    export VERSION=3.5.2
+    mkdir -p ${HOME}/sw && cd ${HOME}/sw
+    git clone https://github.com/hpcng/singularity.git  && cd singularity
+    export VERSION=3.8.4
     git checkout v${VERSION}
-    cd ${GOPATH}/src/github.com/sylabs/singularity && \
-        ./mconfig && \
-        cd ./builddir && \
-        make && \
-        make install
+    ./mconfig && cd ./builddir && make && make install
     # ==========================
 
     # ==========================
