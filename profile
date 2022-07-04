@@ -209,6 +209,9 @@ case "$HOSTNAME" in
         export RUSTUP_HOME="${HOME}/.rustup"
         export PATH="${PATH}:${CARGO_HOME}/bin"
         . "${CARGO_HOME}/env"
+        # add conda to path
+        export PATH="${SOFTWAREDIR}/miniconda3/bin:${PATH}"
+
         ;;
     *)
 
@@ -295,4 +298,3 @@ if [ -r "${HOME}/.dir_colors" ]; then
 fi
 
 export PATH="$HOME/.poetry/bin:$PATH"
-. "$HOME/.cargo/env"
