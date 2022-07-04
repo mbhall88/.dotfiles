@@ -199,6 +199,17 @@ case "$HOSTNAME" in
         # see https://stackoverflow.com/questions/28475335/byobu-renames-windows-in-ssh-session
         unset PROMPT_COMMAND
         ;;
+    *XPS*)
+        export SOFTWAREDIR="$HOME/sw"
+        export LD_LIBRARY_PATH="${SOFTWAREDIR}/lib:$LD_LIBRARY_PATH"
+        export PKG_CONFIG_PATH="${SOFTWAREDIR}/lib/pkgconfig/:$PKG_CONFIG_PATH"
+        export PATH="${SOFTWAREDIR}/bin/:$PATH"
+        # rust installed as per https://github.com/rust-lang/rustup/issues/618#issuecomment-570951132
+        export CARGO_HOME="${HOME}/.cargo"
+        export RUSTUP_HOME="${HOME}/.rustup"
+        export PATH="${PATH}:${CARGO_HOME}/bin"
+        . "${CARGO_HOME}/env"
+        ;;
     *)
 
         export GOPATH="${HOME}/go"
@@ -272,7 +283,7 @@ export BAT_THEME="Nord"
 export STARSHIP_CONFIG="${HOME}/.starship.toml"
 
 # use pyenv python for byobu
-export BYOBU_PYTHON='/usr/bin/env python'
+export BYOBU_PYTHON='/usr/bin/env python3'
 
 # set nord theme as default for dircolors - https://www.nordtheme.com/docs/ports/dircolors/
 if [ -r "${HOME}/.dir_colors" ]; then
@@ -284,3 +295,4 @@ if [ -r "${HOME}/.dir_colors" ]; then
 fi
 
 export PATH="$HOME/.poetry/bin:$PATH"
+. "$HOME/.cargo/env"
