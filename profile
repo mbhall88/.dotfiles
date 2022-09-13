@@ -259,8 +259,7 @@ export PATH="$PATH:/usr/local/go/bin"
 
 # Add rust cargo-installed programs in PATH
 if [ -d "${HOME}/.cargo/bin" ]; then
-    export PATH="$HOME/.cargo/bin:$PATH"
-fi
+    fi
 
 # Preferred editor for local and remote sessions
 export VISUAL=vim
