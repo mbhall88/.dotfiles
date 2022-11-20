@@ -297,3 +297,6 @@ if [ -r "${HOME}/.dir_colors" ]; then
 fi
 
 export PATH="$HOME/.poetry/bin:$PATH"
+if [ -f "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
+fi
