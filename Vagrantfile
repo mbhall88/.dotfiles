@@ -2,7 +2,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 # Box / OS
-VAGRANT_BOX = 'ubuntu/bionic64'
+VAGRANT_BOX = 'ubuntu/jammy64'
 
 # Memorable name for your VM
 VM_NAME = 'dev-vm'
@@ -36,7 +36,7 @@ Vagrant.configure(2) do |config|
   # Set VM name in Virtualbox
   config.vm.provider "virtualbox" do |v|
     v.name = VM_NAME
-    v.memory = 6000
+    v.memory = 8000
     v.cpus = 1
   end
 
@@ -53,10 +53,8 @@ Vagrant.configure(2) do |config|
 
   # Install required programs
   config.vm.provision "shell", inline: <<-SHELL
-    PKGS="language-pack-en git vim make cmake build-essential python3-pip\
-        python debootstrap x11-apps zlib1g-dev libgl1-mesa-glx libarchive-dev"
+    PKGS="language-pack-en git vim make cmake build-essential debootstrap x11-apps zlib1g-dev libgl1-mesa-glx libarchive-dev"
     apt-get update
-    pip install --upgrade pip
 
     for p in $PKGS; do
       apt-get install -y $p
@@ -138,12 +136,8 @@ Vagrant.configure(2) do |config|
 
     # ==========================
     # Install rust utilities
-    cargo install exa ripgrep du-dust zoxide fd-find
+    cargo install exa ripgrep du-dust zoxide fd-find starship
     # ==========================
-
-    # ==========================
-    # INSTALL STARSHIP
-    sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- -y
 
   SHELL
 end
