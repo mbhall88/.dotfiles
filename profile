@@ -295,11 +295,8 @@ if [ -r "${HOME}/.dir_colors" ]; then
         eval "$(dircolors ~/.dir_colors)"
     fi
 fi
-<<<<<<< Updated upstream
 
-export PATH="$HOME/.poetry/bin:$PATH"
 if [ -f "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
 fi
-=======
->>>>>>> Stashed changes
+
