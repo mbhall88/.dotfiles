@@ -64,4 +64,3 @@ if [ -x "$(command -v rbenv)" ]; then
     eval "$(rbenv init -)"
 fi
 
-export PATH="$HOME/.poetry/bin:$PATH"
