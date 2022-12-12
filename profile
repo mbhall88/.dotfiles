@@ -137,8 +137,8 @@ case "$HOSTNAME" in
         export FASTSW_DIR="/hps/software/users/iqbal/mbhall"
         export PATH="${FASTSW_DIR}/bin/:$PATH"
 
-        # add conda to END of path
-        export PATH="${PATH}:${FASTSW_DIR}/miniconda3/bin"
+        # add conda to path
+        export PATH="${FASTSW_DIR}/miniconda3/bin:${PATH}"
         ;;
 
     *noah* | *yoda* | *gpu*)
@@ -295,8 +295,11 @@ if [ -r "${HOME}/.dir_colors" ]; then
         eval "$(dircolors ~/.dir_colors)"
     fi
 fi
+<<<<<<< Updated upstream
 
 export PATH="$HOME/.poetry/bin:$PATH"
 if [ -f "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
 fi
+=======
+>>>>>>> Stashed changes
