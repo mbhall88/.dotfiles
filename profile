@@ -236,18 +236,7 @@ fi
 
 OS=$(uname -s)
 if [ "$OS" = Darwin ]; then
-    eval "$(/usr/local/Homebrew/bin/brew shellenv)"
-    # readline is keg-only, which means it was not symlinked into /usr/local,
-    # because macOS provides the BSD libedit library, which shadows libreadline.
-    # In order to prevent conflicts when programs look for libreadline we are
-    # defaulting this GNU Readline installation to keg-only.
-    #
-    # For compilers to find readline you may need to set:
-    export LDFLAGS="-L/usr/local/opt/readline/lib"
-    export CPPFLAGS="-I/usr/local/opt/readline/include"
-    #
-    # For pkg-config to find readline you may need to set:
-    export PKG_CONFIG_PATH="/usr/local/opt/readline/lib/pkgconfig"
+    eval "$(/opt/Homebrew/bin/brew shellenv)"
 fi
 
 # added by travis gem
