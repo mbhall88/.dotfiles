@@ -4,4 +4,3 @@ channels:
   - bioconda
   - defaults
 channel_priority: strict
-solver: libmamba

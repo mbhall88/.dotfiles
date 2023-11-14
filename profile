@@ -46,7 +46,7 @@ case "$HOSTNAME" in
         . "${CARGO_HOME}/env"
 
         # set the default squeue format - https://slurm.schedmd.com/squeue.html#OPT_format
-        export SQUEUE_FORMAT="%.10i %.20j %.10T %.10P %.20R %.10q %.17S %.10l %.10L %.6m" 
+        export SQUEUE_FORMAT="%.10i %.30j %.10T %.10P %.20R %.10q %.17S %.10l %.10L %.6m" 
         export SQUEUE_USERS="$USER"
         # set the default output format for sacct - https://slurm.schedmd.com/sacct.html#SECTION_Job-Accounting-Fields
         export SACCT_FORMAT="JobID,JobName%20,ExitCode,State,ReqMem,MaxRSS,Timelimit,Elapsed,Start,End"
@@ -66,25 +66,32 @@ case "$HOSTNAME" in
                 export PATH=$(echo $PATH | sed -e 's;:\?/opt/conda/bin;;' -e 's;/opt/conda/bin:\?;;')
                 ;;
             *spartan*)
-                module load git/2.23.0-nodocs singularity/3.8.5
+                module load GCCcore/11.3.0
+                module load Apptainer/1.1.8
+                # add poetry to path
+                export PATH="/home/mihall/.local/bin:$PATH"
 
                 # create array of projects
                 export TB_PROJECT="punim1703"
                 export DRNA_PROJECT="punim1068"
-                PROJECTS="$TB_PROJECT $DRNA_PROJECT"
+                export DUNSTAN_PROJ="punim1637"
+                export ONTVCB_PROJ="punim2009"
+                PROJECTS="$TB_PROJECT $DRNA_PROJECT $DUNSTAN_PROJ $ONTVCB_PROJ"
 
                 # manually set the project dirs to bind
-                SINGULARITY_BIND=""
+                APPTAINER_BIND=""
                 for prj in ${PROJECTS}; do
-                    SINGULARITY_BIND="${SINGULARITY_BIND}/data/scratch/projects/${prj},"
-                    SINGULARITY_BIND="${SINGULARITY_BIND}/data/gpfs/projects/${prj},"
+                    APPTAINER_BIND="${APPTAINER_BIND}/data/scratch/projects/${prj},"
+                    APPTAINER_BIND="${APPTAINER_BIND}/data/gpfs/projects/${prj},"
                 done
-                export SINGULARITY_BIND="${SINGULARITY_BIND%?}"  # remove trailing comma
+                export APPTAINER_BIND="${APPTAINER_BIND%?}"  # remove trailing comma
 
                 ;;
         esac
         # add conda to path
         export PATH="${SOFTWAREDIR}/miniconda3/bin:${PATH}"
+        export PATH="${SOFTWAREDIR}/mambaforge/bin:${PATH}"
+        export PATH="${SOFTWAREDIR}/miniforge3/bin:${PATH}"
 
         ;;
     *codon*)
@@ -212,6 +219,7 @@ case "$HOSTNAME" in
         . "${CARGO_HOME}/env"
         # add conda to path
         export PATH="${SOFTWAREDIR}/miniconda3/bin:${PATH}"
+        export PATH="${SOFTWAREDIR}/mambaforge/bin:${PATH}"
 
         ;;
     *Mac-mini*)
