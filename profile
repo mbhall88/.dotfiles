@@ -214,6 +214,11 @@ case "$HOSTNAME" in
         export PATH="${SOFTWAREDIR}/miniconda3/bin:${PATH}"
 
         ;;
+    *Mac-mini*)
+        export SOFTWAREDIR="$HOME/sw"
+        export POETRY_HOME="$SOFTWAREDIR/poetry"
+        export PATH="$POETRY_HOME/bin:$PATH"
+        ;;
     *)
 
         export GOPATH="${HOME}/go"
