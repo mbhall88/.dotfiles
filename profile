@@ -34,9 +34,11 @@ export SOFTWAREDIR="$HOME/sw"
 export LD_LIBRARY_PATH="${SOFTWAREDIR}/lib:$LD_LIBRARY_PATH"
 export PKG_CONFIG_PATH="${SOFTWAREDIR}/lib/pkgconfig/:$PKG_CONFIG_PATH"
 export PATH="${SOFTWAREDIR}/bin/:$PATH"
+export CONDA_DIR="${SOFTWAREDIR}/miniforge3"
+export PATH="${CONDA_DIR}/bin/:$PATH"
 
 case "$HOSTNAME" in
-    *coinlab* | *awoonga* | *wiener* | *tinaroo* | *spartan*)
+    *coinlab* | *spartan*)
         # allow user and group read, write, and execute permissions on all files/dirs I create
         umask 002
         # rust installed as per https://github.com/rust-lang/rustup/issues/618#issuecomment-570951132
@@ -54,13 +56,6 @@ case "$HOSTNAME" in
         export SLURM_TIME_FORMAT="%X %d/%m/%y"
 
         case "$HOSTNAME" in
-            *wiener*)
-                module load singularity/3.4.1
-                ;;
-            *awoonga* | *tinaroo*)
-                # load modules
-                module load singularity/3.5.0
-                ;;
             *coinlab*)
                 # remove system conda from PATH
                 export PATH=$(echo $PATH | sed -e 's;:\?/opt/conda/bin;;' -e 's;/opt/conda/bin:\?;;')
@@ -69,7 +64,7 @@ case "$HOSTNAME" in
                 module load GCCcore/11.3.0
                 module load Apptainer/1.1.8
                 # add poetry to path
-                export PATH="/home/mihall/.local/bin:$PATH"
+                export PATH="$HOME/.local/bin:$PATH"
 
                 # create array of projects
                 export TB_PROJECT="punim1703"
@@ -88,11 +83,6 @@ case "$HOSTNAME" in
 
                 ;;
         esac
-        # add conda to path
-        export PATH="${SOFTWAREDIR}/miniconda3/bin:${PATH}"
-        export PATH="${SOFTWAREDIR}/mambaforge/bin:${PATH}"
-        export PATH="${SOFTWAREDIR}/miniforge3/bin:${PATH}"
-
         ;;
     *codon*)
         # Source global definitions
@@ -149,90 +139,16 @@ case "$HOSTNAME" in
         export PATH="${FASTSW_DIR}/miniconda3/bin:${PATH}"
         ;;
 
-    *noah* | *yoda* | *gpu*)
-
-        # Source global definitions
-        if [ -f /etc/bashrc ]; then
-        	. /etc/bashrc
-        fi
-
-        # load singularity v3
-        module load singularity/3.5.0
-
-        case "$HOSTNAME" in
-            *noah*)
-                export LUSTRE="/hps/nobackup/research/zi/mbhall"
-                export NFS="/nfs/research1/zi/mbhall"
-                export ftp_site=/ebi/ftp/private/madagascox
-                export SOFTWAREDIR="${NFS}/Software"
-                export LD_LIBRARY_PATH="${SOFTWAREDIR}/lib:$LD_LIBRARY_PATH"
-                export PKG_CONFIG_PATH="${SOFTWAREDIR}/lib/pkgconfig/:$PKG_CONFIG_PATH"
-                ;;
-            *yoda*)
-                export LUSTRE="/hps/nobackup/iqbal/mbhall"
-                export NFS="/nfs/leia/research/iqbal/mbhall"
-                export SOFTWAREDIR="${NFS}/Software"
-                ;;
-            esac
-
-        . "${SOFTWAREDIR}/sourceme"
-
-        export PATH="${SOFTWAREDIR}/bin/:$PATH"
-
-        # added by Miniconda3 4.5.12 installer
-        export PATH="${PATH}:${SOFTWAREDIR}/miniconda3/bin"
-
-        # make --user pip installs in path
-        export PATH="$HOME/.local/bin:$PATH"
-
-        # required to run jupyter
-        export XDG_RUNTIME_DIR=""
-
-        # set the singularity cache directory to where I want it rather than the default
-        export SINGULARITY_CACHEDIR="${SOFTWAREDIR}/Singularity_images"
-
-        # allow user and group read, write, and execute permissions on all files/dirs I create
-        umask 002
-
-        alias lustre="cd ${LUSTRE}"
-        alias nfs="cd ${NFS}"
-
-        # farmpy needs to know what memory units LSF uses
-        export FARMPY_LSF_MEMORY_UNITS="MB"
-
-        # pyenv setup
-        export PYENV_ROOT="${SOFTWAREDIR}/.pyenv"
-
-        # prevent bash overridding byobu session names.
-        # see https://stackoverflow.com/questions/28475335/byobu-renames-windows-in-ssh-session
-        unset PROMPT_COMMAND
-        ;;
     *XPS*)
-        export SOFTWAREDIR="$HOME/sw"
-        export LD_LIBRARY_PATH="${SOFTWAREDIR}/lib:$LD_LIBRARY_PATH"
-        export PKG_CONFIG_PATH="${SOFTWAREDIR}/lib/pkgconfig/:$PKG_CONFIG_PATH"
-        export PATH="${SOFTWAREDIR}/bin/:$PATH"
         # rust installed as per https://github.com/rust-lang/rustup/issues/618#issuecomment-570951132
         export CARGO_HOME="${HOME}/.cargo"
         export RUSTUP_HOME="${HOME}/.rustup"
         export PATH="${PATH}:${CARGO_HOME}/bin"
         . "${CARGO_HOME}/env"
-        # add conda to path
-        export PATH="${SOFTWAREDIR}/miniconda3/bin:${PATH}"
-        export PATH="${SOFTWAREDIR}/mambaforge/bin:${PATH}"
-
         ;;
     *Mac-mini*)
-        export SOFTWAREDIR="$HOME/sw"
         export POETRY_HOME="$SOFTWAREDIR/poetry"
         export PATH="$POETRY_HOME/bin:$PATH"
-        ;;
-    *)
-
-        export GOPATH="${HOME}/go"
-
-        # add conda to PATH
-        export PATH="${HOME}/Programs/miniconda3/bin:${PATH}"
         ;;
 esac
 
@@ -251,14 +167,6 @@ OS=$(uname -s)
 if [ "$OS" = Darwin ]; then
     eval "$(/opt/Homebrew/bin/brew shellenv)"
 fi
-
-# added by travis gem
-if [ -f "${HOME}/.travis/travis.sh" ]; then
-    . "${HOME}/.travis/travis.sh"
-fi
-
-# add GO to PATH
-export PATH="$PATH:/usr/local/go/bin"
 
 # Add rust cargo-installed programs in PATH
 if [ -d "${HOME}/.cargo/bin" ]; then
