@@ -8,14 +8,14 @@ alias l.='ls -d .* --color=auto'  # show hidden files
 alias bc='bc -l'  # start calculator with maths support
 alias df='df -H'  # human readable df by default
 alias du='du -c'  # human readable du with a grand total
-alias xs='exa'
-alias xl='exa --long --header --group --all'
+alias xs='eza'
+alias xl='eza --long --header --group --all'
 alias gst='git status'
 alias gcam='git commit -am'
 
 # functions to count the number of files/dirs in a directory
 function xc {
-    exa "$@" | wc -l
+    eza "$@" | wc -l
 }
 function lc {
     ls "$@" | wc -l
