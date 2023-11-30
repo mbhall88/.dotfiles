@@ -38,13 +38,13 @@ export CONDA_DIR="${SOFTWAREDIR}/miniforge3"
 export PATH="${CONDA_DIR}/bin/:$PATH"
 
 case "$HOSTNAME" in
-    *coinlab* | *spartan*)
+    *coinlab* | *spartan* | *526080*)
         # allow user and group read, write, and execute permissions on all files/dirs I create
         umask 002
         # rust installed as per https://github.com/rust-lang/rustup/issues/618#issuecomment-570951132
         export CARGO_HOME="${SOFTWAREDIR}/.cargo"
         export RUSTUP_HOME="${SOFTWAREDIR}/.rust"
-        export PATH="${PATH}:${CARGO_HOME}/bin"
+        export PATH="${CARGO_HOME}/bin:${PATH}"
         . "${CARGO_HOME}/env"
 
         # set the default squeue format - https://slurm.schedmd.com/squeue.html#OPT_format
