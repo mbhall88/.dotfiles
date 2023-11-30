@@ -29,6 +29,9 @@ function cs {
     fastaq count_sequences "$@"
 }
 
+# function that allows doing maths on the command line
+function calc { printf "%s\n" "$@" | bc -l; }
+
 # function to start an interactive jobs with given memory and threads
 # usage: bsub_i <mem_in_gb> <threads>
 bsub_i() {
