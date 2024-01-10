@@ -52,6 +52,10 @@ fpath=( "$HOME/.zsh/zfunctions" $fpath )
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 # ====================================
 
+if command -v atuin &> /dev/null
+then
+    eval "$(atuin init zsh)"
+fi
 # initialise starship - https://starship.rs/
 eval "$(starship init zsh)"
 
@@ -64,3 +68,4 @@ if [ -x "$(command -v rbenv)" ]; then
     eval "$(rbenv init -)"
 fi
 
+eval "$(/home/mihall/sw/miniforge3/bin/conda shell.zsh hook)"
