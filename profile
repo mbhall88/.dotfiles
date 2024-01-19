@@ -146,7 +146,7 @@ case "$HOSTNAME" in
         export PATH="${PATH}:${CARGO_HOME}/bin"
         . "${CARGO_HOME}/env"
         ;;
-    *Mac-mini*)
+    *tpgi.com*)
         export POETRY_HOME="$SOFTWAREDIR/poetry"
         export PATH="$POETRY_HOME/bin:$PATH"
         ;;
@@ -213,4 +213,3 @@ if [ -f "$HOME/.cargo/env" ]; then
 fi
 
 _byobu_sourced=1 . /opt/homebrew/Cellar/byobu/5.133_3/bin/byobu-launch 2>/dev/null || true
-. "/home/mihall/sw/.cargo/env"
