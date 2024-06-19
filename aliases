@@ -12,6 +12,8 @@ alias xs='eza'
 alias xl='eza --long --header --group --all'
 alias gst='git status'
 alias gcam='git commit -am'
+alias sq='squeue'
+alias smk='snakemake'
 
 # functions to count the number of files/dirs in a directory
 function xc {
