@@ -80,6 +80,7 @@ case "$HOSTNAME" in
                     APPTAINER_BIND="${APPTAINER_BIND}/data/gpfs/projects/${prj},"
                 done
                 export APPTAINER_BIND="${APPTAINER_BIND%?}"  # remove trailing comma
+                export FZF_ALT_C_COMMAND='fd -It d --search-path /data/scratch/projects/punim2009 --search-path /data/scratch/projects/punim1703 --search-path /data/gpfs/projects/punim1703 --search-path /data/gpfs/projects/punim2009 -E "*.snakemake*"'
 
                 ;;
         esac

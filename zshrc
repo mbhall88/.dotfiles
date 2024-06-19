@@ -4,16 +4,41 @@
 # set vim mode for terminal
 set -o vi
 
+# ========================
+# History setup using https://martinheinz.dev/blog/110
+
 # The file to save the history in when an interactive shell exits. If unset, the history is not saved.
 HISTFILE="${HOME}/.zsh_history"
-# If this is set, zsh sessions will append their history list to the history file, rather than replace it.
-setopt append_history
-# If a new command line being added to the history list duplicates an older one, the older command is removed from the list (even if it is not the previous event).
-setopt hist_ignore_all_dups
 # the number of commands to save
-HISTSIZE=50000
+HISTSIZE=10000000
 # The history is trimmed when its length excedes SAVEHIST by 20%.
-SAVEHIST=10000
+SAVEHIST=10000000
+
+HISTORY_IGNORE=('ls' 'ls *' 'cd' 'cd *' 'pwd' 'exit')
+setopt EXTENDED_HISTORY      # Write the history file in the ':start:elapsed;command' format.
+setopt INC_APPEND_HISTORY    # Write to the history file immediately, not when the shell exits.
+setopt SHARE_HISTORY         # Share history between all sessions.
+setopt HIST_IGNORE_DUPS      # Do not record an event that was just recorded again.
+setopt HIST_IGNORE_ALL_DUPS  # Delete an old recorded event if a new event is a duplicate.
+setopt HIST_IGNORE_SPACE     # Do not record an event starting with a space.
+setopt HIST_SAVE_NO_DUPS     # Do not write a duplicate event to the history file.
+setopt HIST_VERIFY           # Do not execute immediately upon history expansion.
+setopt APPEND_HISTORY        # append to history file (Default)
+setopt HIST_REDUCE_BLANKS    # Remove superfluous blanks from each command line being added to the history.
+HIST_STAMPS="yyyy-mm-dd"     # adds a timestamp to each line in the history file instead of just the line number
+
+plugins=(git fzf)
+
+# With that, when you search history, ZSH will automatically use FZF for fuzzy search. This however might use find command in the background which isn't very fast.
+export FZF_DEFAULT_COMMAND='rg --files --hidden'
+export FZF_DEFAULT_OPTS='--height 40% --border'
+
+# bindkey -v
+zle -N fzf-history-widget
+bindkey '^R' fzf-history-widget
+bindkey '^[[A' fzf-history-widget
+
+# ========================
 # dont auto cd when typing the name of a dir
 unsetopt auto_cd
 # Adds support for command substitution. You'll need this for the suggestion plugins.
@@ -62,6 +87,11 @@ eval "$(starship init zsh)"
 # initialise zoxide - https://github.com/ajeetdsouza/zoxide
 eval "$(zoxide init zsh)"
 
+if command -v fzf &> /dev/null
+then
+    source <(fzf --zsh)
+fi
+
 # add rbenv to path
 export PATH="$HOME/.rbenv/bin:$PATH"
 if [ -x "$(command -v rbenv)" ]; then
@@ -69,3 +99,8 @@ if [ -x "$(command -v rbenv)" ]; then
 fi
 
 eval "$(/home/mihall/sw/miniforge3/bin/conda shell.zsh hook)"
+
+if [ -f "$HOME/.atuin/bin/env" ]; then
+    . "$HOME/.atuin/bin/env"
+fi
+
