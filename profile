@@ -151,6 +151,10 @@ case "$HOSTNAME" in
         export POETRY_HOME="$SOFTWAREDIR/poetry"
         export PATH="$POETRY_HOME/bin:$PATH"
         ;;
+    *Mac-mini*)
+        export POETRY_HOME="$SOFTWAREDIR/poetry"
+        export PATH="$POETRY_HOME/bin:$PATH"
+        ;;
 esac
 
 
