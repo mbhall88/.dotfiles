@@ -20,6 +20,7 @@
 	defaultBranch = main
 [push]
 	default = simple
+	autoSetupRemote = true
 
 # dracula git theme https://draculatheme.com/git
 # INCLUDES
