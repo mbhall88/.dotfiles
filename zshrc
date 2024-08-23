@@ -1,8 +1,10 @@
 # User configuration
 [[ -e ~/.profile ]] && emulate sh -c 'source ~/.profile'
 
+ZSHDIR="${HOME}/.zsh/"
+
 # set vim mode for terminal
-set -o vi
+# set -o vi
 
 # ========================
 # History setup using https://martinheinz.dev/blog/110
@@ -27,13 +29,13 @@ setopt APPEND_HISTORY        # append to history file (Default)
 setopt HIST_REDUCE_BLANKS    # Remove superfluous blanks from each command line being added to the history.
 HIST_STAMPS="yyyy-mm-dd"     # adds a timestamp to each line in the history file instead of just the line number
 
-plugins=(git fzf)
+plugins=(git zsh-vi-plugin fzf)
 
 # With that, when you search history, ZSH will automatically use FZF for fuzzy search. This however might use find command in the background which isn't very fast.
 export FZF_DEFAULT_COMMAND='rg --files --hidden'
-export FZF_DEFAULT_OPTS='--height 40% --border'
+export FZF_DEFAULT_OPTS='--height 40% --border --highlight-line'
 
-# bindkey -v
+bindkey -v
 zle -N fzf-history-widget
 bindkey '^R' fzf-history-widget
 bindkey '^[[A' fzf-history-widget
@@ -51,24 +53,6 @@ setopt interactivecomments
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Aliases are kept in ~/.aliases
-
-# Source zsh plugins
-ZSHDIR="${HOME}/.zsh/"
-if [ -d "$ZSHDIR" ];then
-    source "$ZSHDIR"/zsh-autosuggestions/zsh-autosuggestions.zsh
-    source "$ZSHDIR"/alias-tips/alias-tips.plugin.zsh
-    source "$ZSHDIR"/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-else
-    echo "Warning: zsh directory could not be found at $ZSHDIR"
-fi
-
-fpath=( "$HOME/.zsh/zfunctions" $fpath )
 
 # =================================
 # auto-suggestion configuration
@@ -104,3 +88,20 @@ if [ -f "$HOME/.atuin/bin/env" ]; then
     . "$HOME/.atuin/bin/env"
 fi
 
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Aliases are kept in ~/.aliases
+
+# Source zsh plugins
+if [ -d "$ZSHDIR" ];then
+    source "$ZSHDIR"/zsh-autosuggestions/zsh-autosuggestions.zsh
+    source "$ZSHDIR"/alias-tips/alias-tips.plugin.zsh
+    source "$ZSHDIR"/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+else
+    echo "Warning: zsh directory could not be found at $ZSHDIR"
+fi
+
+fpath=( "$HOME/.zsh/zfunctions" $fpath )
