@@ -112,4 +112,4 @@ if [ -f "/home/mihall/sw/mambaforge/etc/profile.d/mamba.sh" ]; then
 fi
 # <<< conda initialize <<<
 
-. "/home/mihall/sw/.cargo/env"
+. "$HOME/.cargo/env"
