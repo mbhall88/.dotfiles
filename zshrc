@@ -59,6 +59,8 @@ setopt interactivecomments
 
 # will first try to find a suggestion from your history, but, if it can't find a match, will find a suggestion from the completion engine.
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+bindkey '^W' forward-word  # accept next word in autosuggestions
+bindkey '[1;6C' forward-word  
 # ====================================
 
 if command -v atuin &> /dev/null
