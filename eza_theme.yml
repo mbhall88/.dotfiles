@@ -1,0 +1,58 @@
+extensions:
+  sam: 
+    filename:
+      foreground: Cyan
+  bam: 
+    filename:
+      foreground: Yellow
+      is_underline: true
+  bai: 
+    filename:
+      foreground: Yellow
+      is_underline: true
+      is_dimmed: true
+  csi: 
+    filename:
+      foreground: Yellow
+      is_underline: true
+      is_dimmed: true
+  cram: 
+    filename:
+      foreground: Purple
+      is_underline: true
+      is_bold: true
+  fastq:
+    filename:
+      foreground: Cyan
+  fq:
+    filename:
+      foreground: Cyan
+  fasta:
+    filename:
+      foreground: Cyan
+  fa:
+    filename:
+      foreground: Cyan
+  fna:
+    filename:
+      foreground: Cyan
+  gff:
+    filename:
+      foreground: Cyan
+  gff3:
+    filename:
+      foreground: Cyan
+  gtf:
+    filename:
+      foreground: Cyan
+  vcf:
+    filename:
+      foreground: Cyan
+  bcf:
+    filename:
+      foreground: Yellow
+      is_underline: true
+  bed:
+    filename:
+      foreground: Magenta
+      is_underline: true
