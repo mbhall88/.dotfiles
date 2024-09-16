@@ -63,6 +63,7 @@ case "$HOSTNAME" in
             *spartan*)
                 module load GCCcore/11.3.0
                 module load Apptainer/1.1.8
+                module load OpenSSL/3
                 # add poetry to path
                 export PATH="$HOME/.local/bin:$PATH"
 
