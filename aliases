@@ -34,6 +34,27 @@ function cs {
 # function that allows doing maths on the command line
 function calc { printf "%s\n" "$@" | bc -l; }
 
+# Function to go up N directories
+up() {
+    local n=$1
+    local path=""
+    for ((i=1; i<=n; i++)); do
+        path+="../"
+    done
+    cd "$path"
+}
+
+# Aliases for convenience
+alias u1='up 1'
+alias u2='up 2'
+alias u3='up 3'
+alias u4='up 4'
+alias u5='up 5'
+alias u6='up 6'
+alias u7='up 7'
+alias u8='up 8'
+alias u9='up 9'
+
 # function to start an interactive jobs with given memory and threads
 # usage: bsub_i <mem_in_gb> <threads>
 bsub_i() {
