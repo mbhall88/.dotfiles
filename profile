@@ -84,6 +84,27 @@ case "$HOSTNAME" in
                 export FZF_ALT_C_COMMAND='fd -It d --search-path /data/scratch/projects/punim2009 --search-path /data/scratch/projects/punim1703 --search-path /data/gpfs/projects/punim1703 --search-path /data/gpfs/projects/punim2009 -E "*.snakemake*" -E "*.git" -E "*/conda/*'
                 export FZF_CTRL_T_COMMAND='fd -I --search-path /data/scratch/projects/punim2009 --search-path /data/scratch/projects/punim1703 --search-path /data/gpfs/projects/punim1703 --search-path /data/gpfs/projects/punim2009 -E "*.snakemake*" -E "*.git" -E "*/conda/*"'
 
+				# Example: Assuming `check_home_usage` outputs "mihall has used 33GB out of 50GB in /home/mihall"
+				USAGE=$(check_home_usage | grep -oP 'used \K[0-9]+(?=GB)')  # Extract the used space in GB
+				QUOTA=$(check_home_usage | grep -oP 'out of \K[0-9]+(?=GB)') # Extract the quota in GB
+
+				if [ -z "$USAGE" ] || [ -z "$QUOTA" ]; then
+					echo "Error: Unable to retrieve home usage information."
+					return
+				fi
+
+				PERCENTAGE=$(echo "($USAGE / $QUOTA) * 100" | bc -l | awk '{printf "%.0f", $0}')
+
+				if [ "$PERCENTAGE" -ge 80 ]; then
+					echo -e "\e[1;31m"
+					echo "###############################################"
+					echo "##########  WARNING: DISK USAGE HIGH  #########"
+					echo "###############################################"
+					echo -e "You have used $PERCENTAGE% of your quota in $HOME ($USAGE GB out of $QUOTA GB)."
+					echo "###############################################"
+					echo "###############################################"
+					echo -e "\e[0m"
+				fi
                 ;;
         esac
         ;;
