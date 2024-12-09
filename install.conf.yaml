@@ -32,6 +32,8 @@
     ~/.condarc:                        condarc
     ~/.config/matplotlib/matplotlibrc: matplotlibrc
     ~/.config/eza/theme.yml:           eza_theme.yml
+    ~/.zsh/_git:                       git-completion.zsh
+    ~/.git-completion.bash:            git-completion.bash
 
 - create:
     - ~/.vim/undo-history

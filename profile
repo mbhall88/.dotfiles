@@ -240,6 +240,11 @@ if [ -f "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
 fi
 
+# git tab auto-completion
+if [ -f ~/.git-completion.bash ]; then
+    . ~/.git-completion.bash
+fi
+
 # theme config file for eza
 export EZA_CONFIG_DIR="$HOME/.config/eza"
 

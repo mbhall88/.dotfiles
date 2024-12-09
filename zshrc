@@ -63,10 +63,11 @@ bindkey '^W' forward-word  # accept next word in autosuggestions
 bindkey '[1;6C' forward-word  
 # ====================================
 
-if command -v atuin &> /dev/null
-then
-    eval "$(atuin init zsh)"
+# git auto-completion needs to know where the bash git complrtion are
+if [ -f ~/.git-completion.bash ]; then
+    zstyle ':completion:*:*:git:*' script ~/.git-completion.bash
 fi
+
 # initialise starship - https://starship.rs/
 eval "$(starship init zsh)"
 
@@ -106,4 +107,6 @@ else
     echo "Warning: zsh directory could not be found at $ZSHDIR"
 fi
 
+fpath=( "$ZSHDIR" $fpath )
 fpath=( "$HOME/.zsh/zfunctions" $fpath )
+eval "$(${HOME}/sw/miniforge3/bin/conda shell.zsh hook)"
