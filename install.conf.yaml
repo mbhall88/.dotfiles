@@ -21,7 +21,7 @@
     ~/.ssh/config:                     ssh.config
     ~/.profile:                        profile
     ~/.starship.toml:                  starship.toml
-    ~/.alacritty.yml:                  alacritty.yml
+    ~/.alacritty.toml:                 alacritty.toml
     ~/.dir_colors:                     nord-dircolors/src/dir_colors
     ~/.config/terminator/config:       terminator.config
     ~/.mbsyncrc:                       mail/mbsyncrc
@@ -34,6 +34,7 @@
     ~/.config/eza/theme.yml:           eza_theme.yml
     ~/.zsh/_git:                       git-completion.zsh
     ~/.git-completion.bash:            git-completion.bash
+    ~/.config/zellij/config.kdl:       zellij.kdl
 
 - create:
     - ~/.vim/undo-history
