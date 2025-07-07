@@ -85,8 +85,6 @@ if [ -x "$(command -v rbenv)" ]; then
     eval "$(rbenv init -)"
 fi
 
-eval "$(/home/mihall/sw/miniforge3/bin/conda shell.zsh hook)"
-
 if [ -f "$HOME/.atuin/bin/env" ]; then
     . "$HOME/.atuin/bin/env"
 fi
@@ -110,3 +108,4 @@ fi
 fpath=( "$ZSHDIR" $fpath )
 fpath=( "$HOME/.zsh/zfunctions" $fpath )
 eval "$(${HOME}/sw/miniforge3/bin/conda shell.zsh hook)"
+eval "$(zellij setup --generate-auto-start zsh)"
