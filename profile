@@ -202,7 +202,7 @@ if [ -d "${HOME}/.cargo/bin" ]; then
 fi
 
 # Preferred editor for local and remote sessions
-export VISUAL=vim
+export VISUAL=nvim
 export EDITOR="$VISUAL"
 
 # Alias definitions.
