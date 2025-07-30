@@ -113,3 +113,5 @@ fi
 # <<< conda initialize <<<
 
 . "$HOME/.cargo/env"
+
+. "$HOME/.local/bin/env"

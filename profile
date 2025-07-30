@@ -249,3 +249,5 @@ fi
 export EZA_CONFIG_DIR="$HOME/.config/eza"
 
 _byobu_sourced=1 . /opt/homebrew/Cellar/byobu/5.133_3/bin/byobu-launch 2>/dev/null || true
+
+. "$HOME/.local/bin/env"
