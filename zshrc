@@ -108,7 +108,9 @@ fi
 fpath=( "$ZSHDIR" $fpath )
 fpath=( "$HOME/.zsh/zfunctions" $fpath )
 eval "$(${HOME}/sw/miniforge3/bin/conda shell.zsh hook)"
-eval "$(zellij setup --generate-auto-start zsh)"
+if [ -x "$(command -v zellij)" ]; then
+	eval "$(zellij setup --generate-auto-start zsh)"
+fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
