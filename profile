@@ -8,22 +8,6 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
-# if running bash
-# if [ -n "$BASH_VERSION" ]; then
-#     # include .bashrc if it exists
-#     if [ -f "$HOME/.bashrc" ]; then
-#         . "$HOME/.bashrc"
-#     fi
-# fi
-#
-# # if running zsh
-# if [ -n "$ZSH_VERSION" ]; then
-#     # include .bashrc if it exists
-#     if [ -f "$HOME/.zshrc" ]; then
-#         . "$HOME/.zshrc"
-#     fi
-# fi
-
 # ===================================
 # Section for loading profile for cluster
 if [ -z "$HOSTNAME" ] && [ ! -z $HOST ]; then
@@ -38,6 +22,55 @@ export CONDA_DIR="${SOFTWAREDIR}/miniforge3"
 export PATH="${CONDA_DIR}/bin/:$PATH"
 
 case "$HOSTNAME" in
+    bunya[0-9]|bun[0-9]*)
+        # allow user and group read, write, and execute permissions on all files/dirs I create
+        umask 002
+
+        export CARGO_HOME="${HOME}/.cargo"
+        export RUSTUP_HOME="${HOME}/.rust"
+        export PATH="${CARGO_HOME}/bin:${PATH}"
+        . "${CARGO_HOME}/env"
+
+        # set the default squeue format - https://slurm.schedmd.com/squeue.html#OPT_format
+        export SQUEUE_FORMAT="%.10i %.30j %.10T %.10P %.20R %.10q %.17S %.10l %.10L %.6m" 
+        export SQUEUE_USERS="$USER"
+        # set the default output format for sacct - https://slurm.schedmd.com/sacct.html#SECTION_Job-Accounting-Fields
+        export SACCT_FORMAT="JobID,JobName%30,ExitCode,State,ReqMem,MaxRSS,Timelimit,Elapsed,Start,End"
+        # set the default slurm time format - https://slurm.schedmd.com/sacct.html#OPT_SLURM_TIME_FORMAT
+        export SLURM_TIME_FORMAT="%X %d/%m/%y"
+
+        # a function that gets the current usage of my home and scratch space(s) and outputs an error to the screen when
+        # I log in if they are over 80% of the limit
+        check_rquota_usage() {
+            local threshold=80
+            local rquota_output
+            rquota_output=$(rquota 2>/dev/null)
+
+            # Skip header line and loop over each filesystem
+            echo "$rquota_output" | tail -n +2 | while read -r fs used_gb limit_gb used_files limit_files; do
+                # Skip lines with missing data
+                if [ -z "$used_gb" ] || [ -z "$limit_gb" ] || [ -z "$used_files" ] || [ -z "$limit_files" ]; then
+                    continue
+                fi
+
+                # Calculate usage percentages
+                gb_pct=$(awk -v u="$used_gb" -v l="$limit_gb" 'BEGIN { printf "%.0f", (u/l)*100 }')
+                file_pct=$(awk -v u="$used_files" -v l="$limit_files" 'BEGIN { printf "%.0f", (u/l)*100 }')
+
+                if [ "$gb_pct" -ge "$threshold" ] || [ "$file_pct" -ge "$threshold" ]; then
+                    echo -e "\e[1;31m"
+                    echo "###############################################"
+                    echo "###  WARNING: USAGE HIGH ON $fs ###############"
+                    echo "###############################################"
+                    echo "Used: $used_gb GB out of $limit_gb GB (${gb_pct}%)"
+                    echo "Files: $used_files out of $limit_files (${file_pct}%)"
+                    echo "###############################################"
+                    echo -e "\e[0m"
+                fi
+            done
+        }
+        check_rquota_usage
+        ;;
     *coinlab* | *spartan* | *526080*)
         # allow user and group read, write, and execute permissions on all files/dirs I create
         umask 002
@@ -84,96 +117,31 @@ case "$HOSTNAME" in
                 export FZF_ALT_C_COMMAND='fd -It d --search-path /data/scratch/projects/punim2009 --search-path /data/scratch/projects/punim1703 --search-path /data/gpfs/projects/punim1703 --search-path /data/gpfs/projects/punim2009 -E "*.snakemake*" -E "*.git" -E "*/conda/*'
                 export FZF_CTRL_T_COMMAND='fd -I --search-path /data/scratch/projects/punim2009 --search-path /data/scratch/projects/punim1703 --search-path /data/gpfs/projects/punim1703 --search-path /data/gpfs/projects/punim2009 -E "*.snakemake*" -E "*.git" -E "*/conda/*"'
 
-				# Example: Assuming `check_home_usage` outputs "mihall has used 33GB out of 50GB in /home/mihall"
-				USAGE=$(check_home_usage | grep -oP 'used \K[0-9]+(?=GB)')  # Extract the used space in GB
-				QUOTA=$(check_home_usage | grep -oP 'out of \K[0-9]+(?=GB)') # Extract the quota in GB
+		# Example: Assuming `check_home_usage` outputs "mihall has used 33GB out of 50GB in /home/mihall"
+		USAGE=$(check_home_usage | grep -oP 'used \K[0-9]+(?=GB)')  # Extract the used space in GB
+		QUOTA=$(check_home_usage | grep -oP 'out of \K[0-9]+(?=GB)') # Extract the quota in GB
 
-				if [ -z "$USAGE" ] || [ -z "$QUOTA" ]; then
-					echo "Error: Unable to retrieve home usage information."
-					return
-				fi
+		if [ -z "$USAGE" ] || [ -z "$QUOTA" ]; then
+			echo "Error: Unable to retrieve home usage information."
+			return
+		fi
 
-				PERCENTAGE=$(echo "($USAGE / $QUOTA) * 100" | bc -l | awk '{printf "%.0f", $0}')
+		PERCENTAGE=$(echo "($USAGE / $QUOTA) * 100" | bc -l | awk '{printf "%.0f", $0}')
 
-				if [ "$PERCENTAGE" -ge 80 ]; then
-					echo -e "\e[1;31m"
-					echo "###############################################"
-					echo "##########  WARNING: DISK USAGE HIGH  #########"
-					echo "###############################################"
-					echo -e "You have used $PERCENTAGE% of your quota in $HOME ($USAGE GB out of $QUOTA GB)."
-					echo "###############################################"
-					echo "###############################################"
-					echo -e "\e[0m"
-				fi
+		if [ "$PERCENTAGE" -ge 80 ]; then
+			echo -e "\e[1;31m"
+			echo "###############################################"
+			echo "##########  WARNING: DISK USAGE HIGH  #########"
+			echo "###############################################"
+			echo -e "You have used $PERCENTAGE% of your quota in $HOME ($USAGE GB out of $QUOTA GB)."
+			echo "###############################################"
+			echo "###############################################"
+			echo -e "\e[0m"
+		fi
                 ;;
         esac
         ;;
-    *codon*)
-        # Source global definitions
-        if [ -f /etc/bashrc ]; then
-        	. /etc/bashrc
-        fi
 
-        # load modules
-        module load singularity-3.7.0-gcc-9.3.0-dp5ffrp \
-          gcc-9.3.0-gcc-9.3.0-lnsweiq \
-          cmake-3.19.5-gcc-9.3.0-z5ntmum \
-          zlib-1.2.11-gcc-9.3.0-7oy27qp \
-          cuda-11.1.1-gcc-9.3.0-oqr2b7d
-
-        export LUSTRE="/hps/nobackup/iqbal/mbhall/"
-        export NFS="/nfs/research/zi/mbhall/"
-        export SOFTWAREDIR="${NFS}/Software"
-        export LD_LIBRARY_PATH="${SOFTWAREDIR}/lib:$LD_LIBRARY_PATH"
-        export PKG_CONFIG_PATH="${SOFTWAREDIR}/lib/pkgconfig/:$PKG_CONFIG_PATH"
-        export PATH="${SOFTWAREDIR}/bin/:$PATH"
-        # avoids singularity failing
-        export SINGULARITY_CONTAIN=TRUE
-        export SINGULARITY_BINDPATH="$(dirname $NFS),$(dirname $LUSTRE),/homes,/tmp"
-
-        # required to run jupyter
-        export XDG_RUNTIME_DIR=""
-
-        # set the singularity cache directory to where I want it rather than the default
-        export SINGULARITY_CACHEDIR="${SOFTWAREDIR}/.singularity_cache/"
-
-        # allow user and group read, write, and execute permissions on all files/dirs I create
-        umask 002
-
-        alias lustre="cd ${LUSTRE}"
-        alias nfs="cd ${NFS}"
-
-        # farmpy needs to know what memory units LSF uses
-        export FARMPY_LSF_MEMORY_UNITS="MB"
-
-        # prevent bash overridding byobu session names.
-        # see https://stackoverflow.com/questions/28475335/byobu-renames-windows-in-ssh-session
-        unset PROMPT_COMMAND
-
-        # rust installed as per https://github.com/rust-lang/rustup/issues/618#issuecomment-570951132
-        export CARGO_HOME="${SOFTWAREDIR}/.cargo"
-        export RUSTUP_HOME="${SOFTWAREDIR}/.rust"
-        export PATH="${PATH}:${CARGO_HOME}/bin"
-
-        # fast access software dir
-        export FASTSW_DIR="/hps/software/users/iqbal/mbhall"
-        export PATH="${FASTSW_DIR}/bin/:$PATH"
-
-        # add conda to path
-        export PATH="${FASTSW_DIR}/miniconda3/bin:${PATH}"
-        ;;
-
-    *XPS*)
-        # rust installed as per https://github.com/rust-lang/rustup/issues/618#issuecomment-570951132
-        export CARGO_HOME="${HOME}/.cargo"
-        export RUSTUP_HOME="${HOME}/.rustup"
-        export PATH="${PATH}:${CARGO_HOME}/bin"
-        . "${CARGO_HOME}/env"
-        ;;
-    *tpgi.com*)
-        export POETRY_HOME="$SOFTWAREDIR/poetry"
-        export PATH="$POETRY_HOME/bin:$PATH"
-        ;;
     *Mac-mini*)
         export POETRY_HOME="$SOFTWAREDIR/poetry"
         export PATH="$POETRY_HOME/bin:$PATH"
@@ -224,9 +192,6 @@ export BAT_THEME="Nord"
 # set location of starship config https://starship.rs/
 export STARSHIP_CONFIG="${HOME}/.starship.toml"
 
-# use pyenv python for byobu
-export BYOBU_PYTHON='/usr/bin/env python3'
-
 # set nord theme as default for dircolors - https://www.nordtheme.com/docs/ports/dircolors/
 if [ -r "${HOME}/.dir_colors" ]; then
     if [ "$OS" = Darwin ]; then
@@ -247,7 +212,5 @@ fi
 
 # theme config file for eza
 export EZA_CONFIG_DIR="$HOME/.config/eza"
-
-_byobu_sourced=1 . /opt/homebrew/Cellar/byobu/5.133_3/bin/byobu-launch 2>/dev/null || true
 
 . "$HOME/.local/bin/env"
