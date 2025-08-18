@@ -3,6 +3,7 @@
 //
 
 keybinds clear-defaults=true {
+    unbind "Ctrl b"
     locked {
         bind "Ctrl g" { SwitchToMode "normal"; }
     }
@@ -214,6 +215,9 @@ keybinds clear-defaults=true {
     }
     shared_among "session" "tmux" {
         bind "d" { Detach; }
+    }
+    shared_among "normal" "pane" "scroll" "search" {
+        bind "Ctrl c" { Write 3; }
     }
     tmux {
         bind "left" { MoveFocus "left"; SwitchToMode "normal"; }
