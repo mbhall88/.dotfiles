@@ -1,3 +1,6 @@
+# # Only configure interactive shells
+[[ $- != *i* ]] && return
+
 # User configuration
 [[ -e ~/.profile ]] && emulate sh -c 'source ~/.profile'
 
@@ -35,7 +38,6 @@ plugins=(git zsh-vi-plugin fzf)
 export FZF_DEFAULT_COMMAND='rg --files --hidden'
 export FZF_DEFAULT_OPTS='--height 40% --border --highlight-line'
 
-bindkey -v
 zle -N fzf-history-widget
 bindkey '^R' fzf-history-widget
 bindkey '^[[A' fzf-history-widget
@@ -52,7 +54,9 @@ setopt interactivecomments
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
-
+fpath=( "$HOME/.zsh" "$HOME/.zsh/zfunctions" $fpath )
+autoload -Uz compinit
+compinit -i
 
 # =================================
 # auto-suggestion configuration
@@ -61,12 +65,9 @@ setopt interactivecomments
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 bindkey '^W' forward-word  # accept next word in autosuggestions
 bindkey '[1;6C' forward-word  
+bindkey '^ ' forward-word                # Ctrl+Space to accept a word
+bindkey '^;' forward-char                 # Ctrl+; to accept a char
 # ====================================
-
-# git auto-completion needs to know where the bash git complrtion are
-if [ -f ~/.git-completion.bash ]; then
-    zstyle ':completion:*:*:git:*' script ~/.git-completion.bash
-fi
 
 # initialise starship - https://starship.rs/
 eval "$(starship init zsh)"
@@ -109,3 +110,28 @@ if [ -x "$(command -v zellij)" ]; then
 fi
 
 . "$HOME/.local/bin/env"
+#
+# # --- keep this block LAST in ~/.zshrc ---
+# Ensure the editor is on and vi mode is active
+zmodload zsh/zle 2>/dev/null
+setopt zle
+bindkey -v
+
+# Give escape sequences time to arrive (prevents paste glitches)
+export KEYTIMEOUT=40
+
+# Handle bracketed paste (start seq is ^[[200~, end is ^[[201~)
+bindkey -M viins '^[[200~' bracketed-paste
+bindkey -M vicmd '^[[200~' bracketed-paste
+
+# Clean Esc -> Normal mapping
+bindkey -M viins '\e' vi-cmd-mode
+
+# Optional: show current keymap on the right for debugging
+function zle-keymap-select {
+  RPS1="[%{$fg[cyan]%}${KEYMAP:-?}%{$reset_color%}]"
+  zle reset-prompt
+}
+zle -N zle-keymap-select
+RPS1="[%{$fg[cyan]%}${KEYMAP:-?}%{$reset_color%}]"
+# --- end LAST block ---
