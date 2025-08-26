@@ -37,6 +37,7 @@ plugins=(git zsh-vi-plugin fzf)
 # With that, when you search history, ZSH will automatically use FZF for fuzzy search. This however might use find command in the background which isn't very fast.
 export FZF_DEFAULT_COMMAND='rg --files --hidden'
 export FZF_DEFAULT_OPTS='--height 40% --border --highlight-line'
+export FZF_CTRL_R_OPTS="--with-nth=2.. --accept-nth=2.."
 
 zle -N fzf-history-widget
 bindkey '^R' fzf-history-widget
