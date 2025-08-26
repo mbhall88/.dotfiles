@@ -41,6 +41,9 @@ bunya[0-9]* | bun[0-9]*)
     # set the default slurm time format - https://slurm.schedmd.com/sacct.html#OPT_SLURM_TIME_FORMAT
     export SLURM_TIME_FORMAT="%X %d/%m/%y"
 
+    export BAKTA_DB="/scratch/opendata/genomics/Bakta/v6/db"
+    export CHECKM2DB="/scratch/opendata/genomics/CheckM2/version_3/CheckM2_database"
+
     # a function that gets the current usage of my home and scratch space(s) and outputs an error to the screen when
     # I log in if they are over 80% of the limit
     check_rquota_usage() {
