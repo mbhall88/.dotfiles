@@ -42,7 +42,7 @@ bunya[0-9]* | bun[0-9]*)
     export SLURM_TIME_FORMAT="%X %d/%m/%y"
 
     export BAKTA_DB="/scratch/opendata/genomics/Bakta/v6/db"
-    export CHECKM2DB="/scratch/opendata/genomics/CheckM2/version_3/CheckM2_database"
+    export CHECKM2DB="/scratch/opendata/genomics/CheckM2/version_3/CheckM2_database/uniref100.KO.1.dmnd"
 
     # a function that gets the current usage of my home and scratch space(s) and outputs an error to the screen when
     # I log in if they are over 80% of the limit
@@ -74,7 +74,10 @@ bunya[0-9]* | bun[0-9]*)
               }
             }'
     }
-    check_rquota_usage
+
+    # only call this function in an interactive shell to avoid errors when running non-interactive commands such as scp and rsync
+    [[ $- == *i* ]] && check_rquota_usage
+
     ;;
 *coinlab* | *spartan* | *526080*)
     # allow user and group read, write, and execute permissions on all files/dirs I create
