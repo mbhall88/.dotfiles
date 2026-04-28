@@ -14,6 +14,7 @@ alias gst='git status'
 alias gcam='git commit -am'
 alias sq='squeue'
 alias smk='snakemake'
+alias tsvtk='csvtk --tabs'
 
 # functions to count the number of files/dirs in a directory
 function xc {
@@ -26,13 +27,30 @@ function lc {
 function mkcd {
     mkdir -p "$@" && cd "$@"
 }
-# count the number of sequences in a fast{a,q} file
-function cs {
-    fastaq count_sequences "$@"
-}
 
 # function that allows doing maths on the command line
 function calc { printf "%s\n" "$@" | bc -l; }
+
+joinjob() {
+    local job_ids
+    # Fetch all running jobs named 'interactive' for the current user
+    job_ids=($(squeue -u "$USER" -n "interactive" -h -t RUNNING -o "%i"))
+
+    if (( ${#job_ids[@]} == 0 )); then
+        echo "[ERROR] No running job named 'interactive' found for user $USER." >&2
+        return 1
+    fi
+
+    if (( ${#job_ids[@]} > 1 )); then
+        echo "[WARN] Multiple 'interactive' jobs found. Joining the most recent one (${job_ids[0]})." >&2
+    fi
+
+    local target_job="${job_ids[0]}"
+    echo "[INFO] Attaching to interactive job: $target_job"
+    
+    # Execute srun with overlap to join the allocation
+    srun --jobid="$target_job" --overlap --pty zsh
+}
 
 # Function to go up N directories
 up() {
@@ -55,30 +73,3 @@ alias u7='up 7'
 alias u8='up 8'
 alias u9='up 9'
 
-# function to start an interactive jobs with given memory and threads
-# usage: bsub_i <mem_in_gb> <threads>
-bsub_i() {
-    mem="${1:-1}"
-    mem=$((mem * 1000))
-    threads="${2:-1}"
-    bsub -Is -n "$threads" -R "span[hosts=1] select[mem>${mem}] rusage[mem=${mem}]" -M"$mem" zsh
-}
-
-case "$HOSTNAME" in
-    *codon*)
-        bsub_gpu() {
-            mem="${1:-4}"
-            mem=$((mem * 1000))
-            n="${2:-1}"
-            bsub -gpu "num=$n" -R "select[mem>$mem] rusage[mem=$mem]" -M"$mem" -q gpu -Is zsh
-        }
-        ;;
-    *noah* | *yoda*)
-        # function to run interactive gpu job
-        bsub_gpu() {
-            mem="${1:-4}"
-            mem=$((mem * 1000))
-            bsub -gpu - -R "select[mem>$mem] rusage[mem=$mem]" -M"$mem" -P gpu -Is zsh
-        }
-        ;;
-esac

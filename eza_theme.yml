@@ -56,3 +56,12 @@ extensions:
     filename:
       foreground: Magenta
       is_underline: true
+  # sh: 
+  #   filename:
+  #     foreground: Green
+  # bash: 
+  #   filename:
+  #     foreground: Green
+  # zsh: 
+  #   filename:
+  #     foreground: Green
