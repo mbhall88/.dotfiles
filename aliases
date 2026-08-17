@@ -31,6 +31,31 @@ function mkcd {
 # function that allows doing maths on the command line
 function calc { printf "%s\n" "$@" | bc -l; }
 
+# Submit an interactive job that hosts a tmux server, using ssubmit for flexible units
+start_tmux_job() {
+    echo "[INFO] Submitting interactive tmux job..."
+    
+    # ssubmit options (-t, -m) and any overrides ($@) go before the job name.
+    # Native sbatch options (-c) must go after the command string and the double dash (--).
+    ssubmit "$@" interactive "tmux new-session -d -s worker; sleep infinity" -- -c 8
+           
+    echo "[INFO] Job submitted. Wait a moment for it to run, then type 'join_tmux_job'."
+}
+
+# Attach to the tmux server running on the compute node
+join_tmux_job() {
+    local target_job
+    target_job=$(squeue -u "$USER" -n "interactive" -h -t RUNNING -o "%i" | head -n 1)
+
+    if [ -z "$target_job" ]; then
+        echo "[ERROR] No running 'interactive' job found." >&2
+        return 1
+    fi
+
+    echo "[INFO] Attaching to tmux on worker node (Job ID: $target_job)..."
+    srun --jobid="$target_job" --overlap --pty tmux attach-session -t worker
+}
+
 joinjob() {
     local job_ids
     # Fetch all running jobs named 'interactive' for the current user

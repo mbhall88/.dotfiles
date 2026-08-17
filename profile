@@ -26,6 +26,7 @@ case "$HOSTNAME" in
 bunya[0-9]* | bun[0-9]*)
     # allow user and group read, write, and execute permissions on all files/dirs I create
     umask 002
+    export ON_BUNYA=1
 
     export CARGO_HOME="${HOME}/.cargo"
     export RUSTUP_HOME="${HOME}/.rust"
@@ -41,15 +42,25 @@ bunya[0-9]* | bun[0-9]*)
     # set the default slurm time format - https://slurm.schedmd.com/sacct.html#OPT_SLURM_TIME_FORMAT
     export SLURM_TIME_FORMAT="%X %d/%m/%y"
 
-    export BAKTA_DB="/scratch/opendata/genomics/Bakta/v6/db"
+    export MOB_SUITE_DB="/scratch/project_mnt/S0256/mob-suite/db"
+    export ATB_DATA_DIR=/scratch/project_mnt/S0256/databases/atb-cli
+    export NOHUMAN_DB="/scratch/project/bug_seq_scratch/nohuman/db/HPRC.r2"
+    export BAKTA_DB="/scratch/project_mnt/S0256/bakta/db/v6.0_20250224/db"
     export CHECKM2DB="/scratch/opendata/genomics/CheckM2/version_3/CheckM2_database/uniref100.KO.1.dmnd"
+    export SSL_CERT_FILE=/etc/pki/tls/certs/ca-bundle.crt
+    export REQUESTS_CA_BUNDLE=/etc/pki/tls/certs/ca-bundle.crt
+
+    export GOOGLE_APPLICATION_CREDENTIALS="/home/uqmhal11/.config/gcloud/application_default_credentials.json"
+    export GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND=file
+    export PATH="${SOFTWAREDIR}/google-cloud-sdk/bin:${PATH}"
+    export PATH="${HOME}/.pixi/bin:$PATH"
 
     # a function that gets the current usage of my home and scratch space(s) and outputs an error to the screen when
     # I log in if they are over 80% of the limit
     check_rquota_usage() {
         command -v rquota >/dev/null 2>&1 || return 0
 
-        local threshold=80
+        local threshold=90
         rquota 2>/dev/null | awk -v t="$threshold" '
             NR==1 { next }  # skip header
             {
@@ -77,6 +88,8 @@ bunya[0-9]* | bun[0-9]*)
 
     # only call this function in an interactive shell to avoid errors when running non-interactive commands such as scp and rsync
     [[ $- == *i* ]] && check_rquota_usage
+
+    export PATH="$HOME/.npm-global/bin:$PATH"
 
     ;;
 *coinlab* | *spartan* | *526080*)
@@ -216,3 +229,7 @@ fi
 export EZA_CONFIG_DIR="$HOME/.config/eza"
 
 . "$HOME/.local/bin/env"
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/uqmhal11/.local/bin:$PATH"
