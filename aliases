@@ -31,13 +31,30 @@ function mkcd {
 # function that allows doing maths on the command line
 function calc { printf "%s\n" "$@" | bc -l; }
 
+# Slurm job name used by the three functions below. Keep them in sync.
+TMUX_JOB_NAME="tmuxjob"
+TMUX_JOB_CPUS=8
+
+# Which shell to use inside the job. Don't use $SHELL - that is the login shell
+# from /etc/passwd, which on Bunya is bash even when you are running zsh
+if [ -n "$ZSH_VERSION" ]; then
+    TMUX_JOB_SHELL="zsh"
+else
+    TMUX_JOB_SHELL="$SHELL"
+fi
+
 # Submit an interactive job that hosts a tmux server, using ssubmit for flexible units
 start_tmux_job() {
     echo "[INFO] Submitting interactive tmux job..."
     
     # ssubmit options (-t, -m) and any overrides ($@) go before the job name.
     # Native sbatch options (-c) must go after the command string and the double dash (--).
-    ssubmit "$@" interactive "tmux new-session -d -s worker; sleep infinity" -- -c 8
+    # The job exits ~30s after the tmux session is killed, instead of holding
+    # the allocation until walltime
+    SSUBMIT_MEMORY=32g SSUBMIT_TIME=1d \
+        ssubmit "$@" "$TMUX_JOB_NAME" \
+        "tmux new-session -d -s worker $TMUX_JOB_SHELL -l; while tmux has-session -t worker 2>/dev/null; do sleep 30; done" \
+        -- -c "$TMUX_JOB_CPUS"
            
     echo "[INFO] Job submitted. Wait a moment for it to run, then type 'join_tmux_job'."
 }
@@ -45,10 +62,10 @@ start_tmux_job() {
 # Attach to the tmux server running on the compute node
 join_tmux_job() {
     local target_job
-    target_job=$(squeue -u "$USER" -n "interactive" -h -t RUNNING -o "%i" | head -n 1)
+    target_job=$(squeue -u "$USER" -n "$TMUX_JOB_NAME" -h -t RUNNING -o "%i" | head -n 1)
 
     if [ -z "$target_job" ]; then
-        echo "[ERROR] No running 'interactive' job found." >&2
+        echo "[ERROR] No running '$TMUX_JOB_NAME' job found." >&2
         return 1
     fi
 
@@ -56,25 +73,26 @@ join_tmux_job() {
     srun --jobid="$target_job" --overlap --pty tmux attach-session -t worker
 }
 
+# Drop a shell into a running job. With no argument, uses the tmux job.
+#   joinjob            -> the $TMUX_JOB_NAME job
+#   joinjob 12345678   -> any job of yours
 joinjob() {
-    local job_ids
-    # Fetch all running jobs named 'interactive' for the current user
-    job_ids=($(squeue -u "$USER" -n "interactive" -h -t RUNNING -o "%i"))
-
-    if (( ${#job_ids[@]} == 0 )); then
-        echo "[ERROR] No running job named 'interactive' found for user $USER." >&2
+    local target_job="$1"
+ 
+    # No arrays here on purpose: zsh indexes them from 1 and bash from 0, so
+    # ${arr[0]} was silently expanding to an empty job ID under plain zsh.
+    if [ -z "$target_job" ]; then
+        target_job=$(squeue -u "$USER" -n "$TMUX_JOB_NAME" -h -t RUNNING -o "%i" | head -n 1)
+    fi
+ 
+    if [ -z "$target_job" ]; then
+        echo "[ERROR] No running job named '$TMUX_JOB_NAME' found for user $USER." >&2
         return 1
     fi
-
-    if (( ${#job_ids[@]} > 1 )); then
-        echo "[WARN] Multiple 'interactive' jobs found. Joining the most recent one (${job_ids[0]})." >&2
-    fi
-
-    local target_job="${job_ids[0]}"
-    echo "[INFO] Attaching to interactive job: $target_job"
-    
-    # Execute srun with overlap to join the allocation
-    srun --jobid="$target_job" --overlap --pty zsh
+ 
+    echo "[INFO] Attaching to job: $target_job"
+    # $SHELL rather than a hardcoded zsh, so this works whatever shell you use
+    srun --jobid="$target_job" --overlap --pty "$TMUX_JOB_SHELL" -l
 }
 
 # Function to go up N directories
