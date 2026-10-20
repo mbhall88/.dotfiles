@@ -26,6 +26,7 @@
     ~/.zsh/_git:                       git-completion.zsh
     ~/.git-completion.bash:            git-completion.bash
     ~/.config/zellij/config.kdl:       zellij.kdl
+    ~/.config/alacritty/alacritty.toml: alacritty.toml
 
 - create:
     - ~/.vim/undo-history
