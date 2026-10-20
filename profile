@@ -181,7 +181,7 @@ fi
 
 OS=$(uname -s)
 if [ "$OS" = Darwin ]; then
-    eval "$(/opt/Homebrew/bin/brew shellenv)"
+    eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
 # Add rust cargo-installed programs in PATH
