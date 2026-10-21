@@ -135,4 +135,12 @@ function zle-keymap-select {
 }
 zle -N zle-keymap-select
 RPS1="[%{$fg[cyan]%}${KEYMAP:-?}%{$reset_color%}]"
+
+# Reset terminal modes a dead ssh session may have left enabled (mouse
+# tracking, focus events), otherwise mouse movement gets typed into the prompt
+function _reset_term_modes {
+  printf '\e[?1000l\e[?1002l\e[?1003l\e[?1004l\e[?1005l\e[?1006l\e[?1015l'
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _reset_term_modes
 # --- end LAST block ---
