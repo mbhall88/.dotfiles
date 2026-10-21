@@ -144,3 +144,6 @@ function _reset_term_modes {
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd _reset_term_modes
 # --- end LAST block ---
+
+# Latch onboarding tools
+export PATH="$HOME/.local/bin:$HOME/.claude/local:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
