@@ -1,0 +1,39 @@
+# Dotbot config for remote pods (Ubuntu). Used by ./pod-setup.
+#
+# A subset of install.conf.yaml. Deliberately left out:
+#   ssh.config, alacritty.toml, ideavimrc  - only meaningful on my laptop
+#   zellij.kdl                             - tmux (tmux.conf, linked below) is used on pods instead
+#   condarc, matplotlibrc                - would change how the pod's own python/conda/plots behave
+#   bashrc, gitconfig                      - the pod's own hold Latch's mamba/nvm init and the gh credential
+#                                            helper. pod-setup includes my gitconfig from the pod's instead,
+#                                            and leaves bash alone (interactive logins hand off to zsh)
+#
+# pod-setup parses the link targets below (lines starting with "~/") to back up
+# anything already there, so keep one target per line.
+- defaults:
+    link:
+      create:                    true
+      relink:                    true
+      force:                     true
+
+- clean:                         ['~']
+
+- link:
+    ~/.aliases:                        aliases
+    ~/.vim:                            vim
+    ~/.vimrc:                          vimrc
+    ~/.zshrc:                          zshrc
+    ~/.zsh:                            zsh
+    ~/.profile:                        profile
+    ~/.starship.toml:                  starship.toml
+    ~/.dir_colors:                     nord-dircolors/src/dir_colors
+    ~/.config/eza/theme.yml:           eza_theme.yml
+    ~/.zsh/_git:                       git-completion.zsh
+    ~/.git-completion.bash:            git-completion.bash
+    ~/.tmux.conf:                      tmux.conf
+
+- create:
+    - ~/.vim/undo-history
+
+- shell:
+  - [git submodule update --init --recursive, Installing submodules]

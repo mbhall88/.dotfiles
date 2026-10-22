@@ -1,0 +1,513 @@
+#!/usr/bin/env bash
+# pod-setup - turn a vanilla Ubuntu pod into my environment. Safe to re-run.
+#
+# On the pod:
+#   git clone https://github.com/mbhall88/.dotfiles.git ~/.dotfiles
+#   ~/.dotfiles/pod-setup --git-email you@example.com
+#
+# What it does:
+#   1. apt: zsh, git (upgraded from ppa:git-core/ppa if older than 2.35), git-lfs, ripgrep, fd, bat,
+#      tmux, vim, build tools, ...
+#   2. static binaries from GitHub releases into ~/.local/bin:
+#      fzf zoxide eza starship delta neovim tree-sitter uv   (no zellij: tmux is used on pods)
+#   3. moves any existing dotfiles that would be replaced into ~/.dotfiles-backup/,
+#      then links mine with dotbot (install.pod.conf.yaml)
+#   4. leaves the pod's own ~/.bashrc, ~/.bashrc.d and ~/.gitconfig alone (Latch's mamba/nvm
+#      init and the gh credential helper live there): my gitconfig is included from the pod's,
+#      and the pod's mamba/nvm/cargo init is repeated for zsh in ~/.zshrc.local
+#      Also adds a `latch` wrapper that runs the Latch CLI with HOME=$HOME/latchhome (the Latch
+#      docs' convention for picking up my own token) without changing HOME for anything else.
+#   5. clones my neovim config and installs its plugins, installs vim plugins
+#   6. makes interactive terminal logins land in zsh, via ~/.bash_profile. The login
+#      shell stays bash so `ssh pod some-command`, scp, rsync and VS Code behave as before.
+#
+# Options (or the matching environment variable):
+#   --git-email EMAIL   commit email for this pod, written to ~/.gitconfig.local   (GIT_EMAIL)
+#   --git-name NAME     commit name for this pod                                  (GIT_NAME)
+#   --skip-apt          don't touch system packages
+#   --force             reinstall tools even if they are already present          (FORCE=1)
+#   -h, --help
+
+set -euo pipefail
+
+DOTFILES_REPO="https://github.com/mbhall88/.dotfiles.git"
+NVIM_REPO="https://github.com/mbhall88/kickstart.nvim.git"
+BIN="$HOME/.local/bin"
+BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
+LOG_DIR="$HOME/.cache/pod-setup"
+APT_PACKAGES=(
+    zsh git git-lfs openssh-client curl wget ca-certificates unzip xz-utils python3
+    build-essential tmux vim ripgrep fd-find bat jq htop tree less bc rsync locales
+)
+# tools I expect to find afterwards; checked at the end
+EXPECTED_TOOLS=(zsh git git-lfs delta rg fd bat fzf zoxide eza starship nvim tree-sitter uv tmux vim)
+
+GIT_EMAIL="${GIT_EMAIL:-}"
+GIT_NAME="${GIT_NAME:-}"
+FORCE="${FORCE:-}"
+SKIP_APT=""
+BACKED_UP=0
+
+log()  { printf '\n\033[1;34m==>\033[0m %s\n' "$*"; }
+warn() { printf '\033[1;33m[warn]\033[0m %s\n' "$*" >&2; }
+die()  { printf '\033[1;31m[error]\033[0m %s\n' "$*" >&2; exit 1; }
+
+have() { command -v "$1" >/dev/null 2>&1; }
+# true if a tool still needs installing (missing, or --force)
+want() { [ -n "$FORCE" ] || ! have "$1"; }
+
+usage() { sed -n '2,/^$/{s/^# \{0,1\}//;p}' "${BASH_SOURCE[0]:-$0}"; }
+
+# run a command as root, via sudo if we aren't root; fails if neither is possible
+as_root() {
+    if [ "$(id -u)" -eq 0 ]; then
+        "$@"
+    elif have sudo; then
+        sudo "$@"
+    else
+        return 1
+    fi
+}
+
+# a nice-to-have failing shouldn't abort the whole setup
+try() {
+    log "$1"
+    shift
+    "$@" || warn "failed: $*"
+}
+
+detect_arch() {
+    case "$(uname -m)" in
+        x86_64 | amd64)
+            ARCH=x86_64; GOARCH=amd64; NVIM_ARCH=x86_64; TS_ARCH=x64; LIBC=musl ;;
+        aarch64 | arm64)
+            ARCH=aarch64; GOARCH=arm64; NVIM_ARCH=arm64; TS_ARCH=arm64; LIBC=gnu ;;
+        *)
+            die "unsupported architecture: $(uname -m)" ;;
+    esac
+}
+
+# ---------------------------------------------------------------- system packages
+
+install_apt() {
+    have apt-get || { warn "apt-get not found, skipping system packages"; return 0; }
+    export DEBIAN_FRONTEND=noninteractive
+    as_root apt-get update -q || warn "apt-get update failed (continuing)"
+    as_root apt-get install -y -q --no-install-recommends "${APT_PACKAGES[@]}" \
+        || warn "apt-get install failed (not root and no sudo?). Re-run as root or with --skip-apt"
+}
+
+# true if the installed git is at least version $1
+git_at_least() {
+    [ "$(printf '%s\n%s\n' "$1" "$(git --version | awk '{print $3}')" | sort -V | sed -n 1p)" = "$1" ]
+}
+
+# Ubuntu 22.04 ships git 2.34, but my gitconfig needs 2.35+ (merge.conflictstyle = zdiff3). The git
+# maintainers' PPA is the usual way to get a current git on Ubuntu.
+upgrade_git() {
+    git_at_least 2.35 && return 0
+    have add-apt-repository || as_root apt-get install -y -q software-properties-common \
+        || { warn "could not install add-apt-repository, leaving git as is"; return 0; }
+    as_root add-apt-repository -y ppa:git-core/ppa \
+        && as_root apt-get update -q \
+        && as_root apt-get install -y -q git \
+        || warn "could not upgrade git from ppa:git-core/ppa"
+}
+
+# bashrc sets LANG/LC_ALL=en_US.UTF-8; a fresh container usually doesn't have that locale
+setup_locale() {
+    if locale -a 2>/dev/null | grep -qi '^en_US\.utf-\{0,1\}8$'; then
+        return 0
+    fi
+    have locale-gen || return 0
+    as_root locale-gen en_US.UTF-8 >/dev/null && as_root update-locale LANG=en_US.UTF-8 \
+        || warn "could not generate the en_US.UTF-8 locale"
+}
+
+# Ubuntu names these fdfind/batcat to avoid clashes; my aliases and configs use the real names
+link_debian_names() {
+    local pair src dst
+    for pair in fdfind:fd batcat:bat; do
+        src=${pair%%:*}
+        dst=${pair##*:}
+        if have "$src" && ! have "$dst"; then
+            ln -s "$(command -v "$src")" "$BIN/$dst"
+        fi
+    done
+}
+
+# ---------------------------------------------------------------- binaries from GitHub releases
+
+# Latest release tag of a GitHub repo. Follows the /releases/latest redirect, so no API rate limit or token.
+latest_tag() {
+    curl -fsSLI -o /dev/null -w '%{url_effective}' "https://github.com/$1/releases/latest" | sed 's|.*/tag/||'
+}
+
+# install_tarball URL EXE... : download a .tar.gz and install the named executables into $BIN
+install_tarball() {
+    local url=$1 tmp exe src
+    shift
+    tmp=$(mktemp -d)
+    if ! curl -fsSL "$url" | tar -xz -C "$tmp"; then
+        warn "download/extract failed: $url"
+        rm -rf "$tmp"
+        return 1
+    fi
+    for exe in "$@"; do
+        src=$(find "$tmp" -type f -name "$exe" | sed -n 1p)
+        if [ -z "$src" ]; then
+            warn "$exe not found in $url"
+            rm -rf "$tmp"
+            return 1
+        fi
+        install -m 755 "$src" "$BIN/$exe"
+    done
+    rm -rf "$tmp"
+}
+
+inst_starship() {
+    install_tarball "https://github.com/starship/starship/releases/latest/download/starship-${ARCH}-unknown-linux-musl.tar.gz" starship
+}
+
+inst_eza() {
+    install_tarball "https://github.com/eza-community/eza/releases/latest/download/eza_${ARCH}-unknown-linux-${LIBC}.tar.gz" eza
+}
+
+inst_uv() {
+    install_tarball "https://github.com/astral-sh/uv/releases/latest/download/uv-${ARCH}-unknown-linux-musl.tar.gz" uv uvx
+}
+
+# fzf must be new enough for `fzf --zsh` (zshrc uses it); Ubuntu 22.04's apt version isn't
+inst_fzf() {
+    local tag
+    tag=$(latest_tag junegunn/fzf) || return 1
+    install_tarball "https://github.com/junegunn/fzf/releases/download/${tag}/fzf-${tag#v}-linux_${GOARCH}.tar.gz" fzf
+}
+
+inst_zoxide() {
+    local tag
+    tag=$(latest_tag ajeetdsouza/zoxide) || return 1
+    install_tarball "https://github.com/ajeetdsouza/zoxide/releases/download/${tag}/zoxide-${tag#v}-${ARCH}-unknown-linux-musl.tar.gz" zoxide
+}
+
+# gitconfig sets core.pager = delta, so git output breaks without it
+inst_delta() {
+    local tag
+    tag=$(latest_tag dandavison/delta) || return 1
+    install_tarball "https://github.com/dandavison/delta/releases/download/${tag}/delta-${tag#v}-${ARCH}-unknown-linux-${LIBC}.tar.gz" delta
+}
+
+# My nvim config compiles treesitter parsers with this. Releases from 0.26 on are built against
+# glibc 2.39 and won't run on Ubuntu 22.04 (2.35), so take the latest if it runs, else the pinned one.
+TS_FALLBACK_TAG="v0.25.10"
+inst_tree_sitter() {
+    local tmp tag url base="https://github.com/tree-sitter/tree-sitter/releases"
+    tmp=$(mktemp)
+    for tag in latest "$TS_FALLBACK_TAG"; do
+        if [ "$tag" = latest ]; then url="$base/latest/download"; else url="$base/download/$tag"; fi
+        if curl -fsSL "$url/tree-sitter-linux-${TS_ARCH}.gz" | gunzip >"$tmp" && chmod +x "$tmp" && "$tmp" --version >/dev/null 2>&1; then
+            install -m 755 "$tmp" "$BIN/tree-sitter"
+            rm -f "$tmp"
+            return 0
+        fi
+    done
+    rm -f "$tmp"
+    return 1
+}
+
+# Ubuntu 22.04's apt neovim is 0.6; my config needs a recent one
+nvim_ok() {
+    have nvim && nvim --headless '+lua os.exit(vim.fn.has("nvim-0.11") == 1 and 0 or 1)' >/dev/null 2>&1
+}
+
+inst_nvim() {
+    local asset="nvim-linux-${NVIM_ARCH}" dir="$HOME/.local/nvim" tmp
+    tmp=$(mktemp -d)
+    if ! curl -fsSL "https://github.com/neovim/neovim/releases/latest/download/${asset}.tar.gz" | tar -xz -C "$tmp"; then
+        rm -rf "$tmp"
+        return 1
+    fi
+    rm -rf "$dir"
+    mv "$tmp/$asset" "$dir"
+    rm -rf "$tmp"
+    ln -sfn "$dir/bin/nvim" "$BIN/nvim"
+}
+
+install_tools() {
+    want starship && try "starship" inst_starship
+    want eza && try "eza" inst_eza
+    want uv && try "uv" inst_uv
+    want delta && try "delta" inst_delta
+    want zoxide && try "zoxide" inst_zoxide
+    if want tree-sitter || ! tree-sitter --version >/dev/null 2>&1; then try "tree-sitter" inst_tree_sitter; fi
+    if want fzf || ! fzf --zsh >/dev/null 2>&1; then try "fzf" inst_fzf; fi
+    if [ -n "$FORCE" ] || ! nvim_ok; then try "neovim" inst_nvim; fi
+    return 0
+}
+
+# ---------------------------------------------------------------- dotfiles
+
+# Use the checkout this script lives in, otherwise clone to ~/.dotfiles
+resolve_dotfiles() {
+    local here=""
+    if [ -n "${BASH_SOURCE[0]:-}" ] && [ -f "$(dirname "${BASH_SOURCE[0]}")/install.pod.conf.yaml" ]; then
+        here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+    fi
+    DOTFILES="${DOTFILES:-${here:-$HOME/.dotfiles}}"
+
+    if [ -d "$DOTFILES/.git" ]; then
+        git -C "$DOTFILES" pull --ff-only --autostash --quiet || warn "could not fast-forward $DOTFILES (using it as is)"
+    elif [ -e "$DOTFILES" ]; then
+        die "$DOTFILES exists but is not a git checkout"
+    else
+        git clone --quiet "$DOTFILES_REPO" "$DOTFILES"
+    fi
+    DOTFILES=$(cd "$DOTFILES" && pwd -P)
+    [ -f "$DOTFILES/install.pod.conf.yaml" ] \
+        || die "$DOTFILES/install.pod.conf.yaml is missing. Has pod-setup been committed and pushed?"
+}
+
+# move_aside PATH : move PATH into the backup dir, preserving its place under $HOME
+move_aside() {
+    local rel=${1#"$HOME"/}
+    mkdir -p "$BACKUP_DIR/$(dirname "$rel")"
+    mv "$1" "$BACKUP_DIR/$rel"
+    BACKED_UP=1
+    echo "  backed up $1"
+}
+
+# dotbot is configured with force: true, which deletes whatever is in the way. Move
+# anything that isn't already one of my symlinks aside first.
+backup_existing() {
+    local target
+    while IFS= read -r target; do
+        target="${target/#\~/$HOME}"
+        { [ -e "$target" ] || [ -L "$target" ]; } || continue
+        if [ -L "$target" ]; then
+            case "$(readlink -f "$target" 2>/dev/null)" in "$DOTFILES"/*) continue ;; esac
+        fi
+        move_aside "$target"
+    done < <(sed -nE 's/^[[:space:]]+(~\/[^:]*):.*/\1/p' "$DOTFILES/install.pod.conf.yaml")
+}
+
+link_dotfiles() {
+    have python3 || die "python3 is required by dotbot"
+    backup_existing
+    git -C "$DOTFILES" submodule update --init --recursive --quiet
+    # PYTHONWARNINGS: the pinned dotbot predates python 3.8 and spams SyntaxWarnings
+    PYTHONWARNINGS=ignore "$DOTFILES/dotbot/bin/dotbot" -d "$DOTFILES" -c "$DOTFILES/install.pod.conf.yaml"
+}
+
+# Terminal logins: bash -> zsh. Non-interactive ssh commands (ssh pod cmd, scp, rsync) never get
+# here and stay on bash with the environment they already had. The -t checks and
+# BASH_EXECUTION_STRING keep this away from tools that run `bash -ilc 'cmd'` over pipes
+# (VS Code resolving the shell environment does), where exec'ing zsh would swallow the command.
+write_bash_profile() {
+    local f="$HOME/.bash_profile"
+    if [ -e "$f" ] && ! grep -q 'managed by pod-setup' "$f"; then
+        warn "$f exists and isn't mine, leaving it. Interactive logins will stay in bash"
+        return 0
+    fi
+    cat >"$f" <<'EOF'
+# managed by pod-setup: terminal logins get zsh, everything else stays on bash.
+# If zsh is ever broken, get a plain shell with:  ssh -t pod bash --norc
+[ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+if [[ $- == *i* && -t 0 && -t 1 && -z "${BASH_EXECUTION_STRING:-}" ]] && command -v zsh >/dev/null 2>&1; then
+    exec zsh -l
+fi
+EOF
+}
+
+# Pods keep their own ~/.gitconfig (on Latch pods it holds the gh credential helper), so include mine from
+# it rather than replacing it. The include goes first so the pod's settings below it still win.
+link_gitconfig() {
+    local f="$HOME/.gitconfig" inc="$DOTFILES/gitconfig" tmp
+    if [ -f "$f" ] && grep -qF "path = $inc" "$f"; then
+        return 0
+    fi
+    # My gitconfig sets merge.conflictstyle = zdiff3. git < 2.35 dies on that at checkout/merge/pull, and it
+    # can't be overridden (git aborts on the first invalid value it reads), so don't include it at all there.
+    if ! git_at_least 2.35; then
+        warn "git $(git --version | awk '{print $3}') is too old for my gitconfig (zdiff3), not including it. Upgrade git and re-run"
+        return 0
+    fi
+    tmp=$(mktemp)
+    printf '# added by pod-setup: shared git config, first so the settings below still win\n[include]\n\tpath = %s\n' "$inc" >"$tmp"
+    if [ -f "$f" ]; then cat "$f" >>"$tmp"; fi
+    cat "$tmp" >"$f"
+    rm -f "$tmp"
+}
+
+# Latch pods set up mamba, nvm and PATH in ~/.bashrc and ~/.bashrc.d, which zsh never reads. Without this,
+# zsh would run with the system python instead of the pod's default mamba env. Every piece is guarded,
+# so on a pod that has none of it the file is a no-op. zshrc sources ~/.zshrc.local if present.
+write_zshrc_local() {
+    local f="$HOME/.zshrc.local"
+    if [ -e "$f" ] && ! grep -q 'managed by pod-setup' "$f"; then
+        warn "$f exists and isn't mine, leaving it"
+        return 0
+    fi
+    cat >"$f" <<'EOF'
+# managed by pod-setup: what the pod's ~/.bashrc and ~/.bashrc.d set up for bash, repeated for zsh
+[ -d "$HOME/.cargo/bin" ] && export PATH="$HOME/.cargo/bin:$PATH"
+[ -d /opt/mamba/envs/cli-tools/install/bin ] && export PATH="$PATH:/opt/mamba/envs/cli-tools/install/bin"
+if [ -x /opt/mamba/bin/mamba ]; then
+    export MAMBA_EXE=/opt/mamba/bin/mamba MAMBA_ROOT_PREFIX=/opt/mamba
+    eval "$("$MAMBA_EXE" shell hook --shell zsh --root-prefix "$MAMBA_ROOT_PREFIX")"
+    [ -d /opt/mamba/envs/default ] && mamba activate default
+fi
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+true
+EOF
+}
+
+# Ubuntu's /etc/zsh/zshrc runs a plain `compinit` before ~/.zshrc. On a pod where completion dirs are
+# group-writable (R's rig leaves /usr/local/share/zsh that way) that stops every new shell at a y/n prompt
+# and aborts completion. My zshrc runs its own `compinit -i`, so skip the global one.
+write_zshenv() {
+    local f="$HOME/.zshenv"
+    if [ -e "$f" ] && ! grep -q 'managed by pod-setup' "$f"; then
+        grep -q skip_global_compinit "$f" || warn "$f exists and isn't mine; add skip_global_compinit=1 to it yourself"
+        return 0
+    fi
+    printf '# managed by pod-setup: my zshrc runs its own compinit -i (see pod-setup)\nskip_global_compinit=1\n' >"$f"
+}
+
+# The Latch docs say to prefix every Latch CLI command with HOME=/root/latchhome, because that is where my own
+# token lives (the pod's ~/.latch/token is the pod-provisioned one). Changing HOME for the whole shell would
+# break gh, Claude Code, nvm, mamba and Latch's own tooling, which all expect the real home. So shadow `latch`
+# with a wrapper that applies it to that one command, in any shell (also non-interactive ones, e.g. Claude Code).
+write_latch_wrapper() {
+    local f="$BIN/latch"
+    [ -d "$HOME/latchhome/.latch" ] || return 0
+    if [ -e "$f" ] && ! grep -q 'managed by pod-setup' "$f"; then
+        warn "$f exists and isn't mine, leaving it"
+        return 0
+    fi
+    cat >"$f" <<'EOF'
+#!/usr/bin/env bash
+# managed by pod-setup: run the real `latch` with HOME=$HOME/latchhome (where my own token lives),
+# the same as prefixing the command with HOME=/root/latchhome.
+self=$(readlink -f "${BASH_SOURCE[0]}")
+alt="${LATCH_CLI_HOME:-$HOME/latchhome}"
+IFS=: read -r -a dirs <<<"$PATH:/opt/mamba/envs/default/bin"
+for d in "${dirs[@]}"; do
+    c="$d/latch"
+    [ -x "$c" ] && [ "$(readlink -f "$c")" != "$self" ] || continue
+    if [ -d "$alt/.latch" ]; then
+        HOME="$alt" exec "$c" "$@"
+    fi
+    exec "$c" "$@"
+done
+echo "latch: no latch executable found on PATH" >&2
+exit 127
+EOF
+    chmod 755 "$f"
+}
+
+# gitconfig includes ~/.gitconfig.local last, so this overrides the identity and any settings in the shared config
+setup_git_local() {
+    local f="$HOME/.gitconfig.local"
+    if [ -n "$GIT_NAME" ]; then git config --file "$f" user.name "$GIT_NAME"; fi
+    if [ -n "$GIT_EMAIL" ]; then git config --file "$f" user.email "$GIT_EMAIL"; fi
+    if ! git config --file "$f" user.email >/dev/null 2>&1; then
+        warn "no commit email set for this pod; commits will use the one in gitconfig. Re-run with --git-email"
+    fi
+}
+
+# ---------------------------------------------------------------- editors
+
+setup_nvim() {
+    local cfg="$HOME/.config/nvim"
+    have nvim || { warn "nvim not installed, skipping nvim config"; return 0; }
+    if [ -d "$cfg/.git" ]; then
+        # --autostash: Lazy rewrites lazy-lock.json, which would otherwise block every re-run's pull
+        git -C "$cfg" pull --ff-only --autostash --quiet || warn "could not update $cfg"
+    else
+        [ -e "$cfg" ] && move_aside "$cfg"
+        git clone --quiet "$NVIM_REPO" "$cfg" || { warn "could not clone $NVIM_REPO"; return 0; }
+    fi
+    mkdir -p "$LOG_DIR"
+    # parsers and mason tools install in the background on first interactive launch
+    timeout 600 nvim --headless '+Lazy! sync' +qa >"$LOG_DIR/nvim.log" 2>&1 \
+        || warn "nvim plugin install had problems, see $LOG_DIR/nvim.log (or just open nvim)"
+}
+
+setup_vim() {
+    have vim || return 0
+    # vim exits non-zero here (the vimrc's colorscheme isn't installed yet), so judge by the result instead
+    timeout 300 vim -es -u "$HOME/.vimrc" -i NONE -c PluginInstall -c qa </dev/null >/dev/null 2>&1 || true
+    if [ "$(find "$HOME/.vim/bundle" -mindepth 1 -maxdepth 1 2>/dev/null | wc -l)" -le 1 ]; then
+        warn "vim plugins did not install; open vim and run :PluginInstall"
+    fi
+}
+
+# ---------------------------------------------------------------- main
+
+summary() {
+    local missing=() t
+    for t in "${EXPECTED_TOOLS[@]}"; do
+        have "$t" || missing+=("$t")
+    done
+    log "Done"
+    if [ "${#missing[@]}" -gt 0 ]; then
+        warn "still missing: ${missing[*]}"
+    else
+        echo "All expected tools are on PATH."
+    fi
+    if [ "$BACKED_UP" -eq 1 ]; then
+        echo "Existing files that were replaced are in $BACKUP_DIR"
+        echo "Check them for anything pod-specific (PATH entries, exports) that you still need."
+    fi
+    echo "Log out and back in (ssh pod) to land in zsh."
+}
+
+main() {
+    while [ $# -gt 0 ]; do
+        case $1 in
+            --git-email) GIT_EMAIL=${2:?--git-email needs a value}; shift 2 ;;
+            --git-name)  GIT_NAME=${2:?--git-name needs a value}; shift 2 ;;
+            --skip-apt)  SKIP_APT=1; shift ;;
+            --force)     FORCE=1; shift ;;
+            -h | --help) usage; exit 0 ;;
+            *) die "unknown option: $1 (see --help)" ;;
+        esac
+    done
+
+    [ "$(uname -s)" = Linux ] || die "pod-setup is for Linux pods, this is $(uname -s)"
+    detect_arch
+    mkdir -p "$BIN"
+    export PATH="$BIN:$PATH"
+
+    if [ -z "$SKIP_APT" ]; then
+        log "System packages"
+        install_apt
+        upgrade_git
+        setup_locale
+    fi
+    link_debian_names
+
+    log "Tools"
+    install_tools
+
+    log "Dotfiles"
+    resolve_dotfiles
+    link_dotfiles
+    write_bash_profile
+    write_zshrc_local
+    write_zshenv
+    write_latch_wrapper
+    setup_git_local
+    link_gitconfig
+
+    try "neovim config" setup_nvim
+    try "vim plugins" setup_vim
+
+    summary
+}
+
+# only run when executed (or piped into bash), not when sourced for testing
+if [[ "${BASH_SOURCE[0]:-$0}" == "$0" ]]; then
+    main "$@"
+fi

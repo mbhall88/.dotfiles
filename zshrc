@@ -105,12 +105,17 @@ fi
 
 fpath=( "$ZSHDIR" $fpath )
 fpath=( "$HOME/.zsh/zfunctions" $fpath )
-eval "$(${HOME}/sw/miniforge3/bin/conda shell.zsh hook)"
+if [ -x "${HOME}/sw/miniforge3/bin/conda" ]; then
+    eval "$(${HOME}/sw/miniforge3/bin/conda shell.zsh hook)"
+fi
 if [ -x "$(command -v zellij)" ]; then
 	eval "$(zellij setup --generate-auto-start zsh)"
 fi
 
-. "$HOME/.local/bin/env"
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
+
+# machine-local additions (e.g. written by pod-setup)
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
 #
 # # --- keep this block LAST in ~/.zshrc ---
 # Ensure the editor is on and vi mode is active

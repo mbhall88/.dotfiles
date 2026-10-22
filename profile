@@ -228,7 +228,7 @@ fi
 # theme config file for eza
 export EZA_CONFIG_DIR="$HOME/.config/eza"
 
-. "$HOME/.local/bin/env"
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
 
 
 # Added by Antigravity CLI installer
