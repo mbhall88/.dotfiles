@@ -123,6 +123,16 @@ zmodload zsh/zle 2>/dev/null
 setopt zle
 bindkey -v
 
+# Up opens the fzf history search. This has to come after `bindkey -v`: the earlier binding went into the
+# emacs keymap, which vi mode doesn't use. Terminals send ^[[A, but tmux (application cursor mode) sends ^[OA.
+if command -v fzf &> /dev/null; then
+  for _key in '^[[A' '^[OA'; do
+    bindkey -M viins "$_key" fzf-history-widget
+    bindkey -M vicmd "$_key" fzf-history-widget
+  done
+  unset _key
+fi
+
 # Give escape sequences time to arrive (prevents paste glitches)
 export KEYTIMEOUT=40
 
