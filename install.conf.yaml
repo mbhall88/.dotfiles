@@ -27,11 +27,13 @@
     ~/.git-completion.bash:            git-completion.bash
     ~/.config/zellij/config.kdl:       zellij.kdl
     ~/.config/alacritty/alacritty.toml: alacritty.toml
+    ~/.alacritty.toml:                 alacritty.toml
     ~/.config/herdr/config.toml:       herdr/config.toml
 
 - create:
     - ~/.vim/undo-history
     - ~/.config/herdr
+    - ~/.config/alacritty
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
