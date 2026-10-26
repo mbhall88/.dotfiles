@@ -31,9 +31,11 @@
     ~/.zsh/_git:                       git-completion.zsh
     ~/.git-completion.bash:            git-completion.bash
     ~/.tmux.conf:                      tmux.conf
+    ~/.config/herdr/config.toml:       herdr/config.toml
 
 - create:
     - ~/.vim/undo-history
+    - ~/.config/herdr
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]

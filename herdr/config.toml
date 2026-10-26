@@ -1,0 +1,21 @@
+# ~/.config/herdr/config.toml (linked from ~/.dotfiles/herdr/config.toml)
+onboarding = false
+
+[terminal]
+# The pod's $SHELL is bash and Herdr starts non-login shells on Linux, so
+# ~/.bash_profile's zsh handoff never runs. Launch zsh directly instead.
+default_shell = "zsh"
+
+[theme]
+name = "tokyo-night"
+
+[keys]
+prefix = "ctrl+a"
+
+# Optional, mirrors your tmux S-Left / S-Right window switching
+previous_tab = ["prefix+p", "shift+left"]
+next_tab = ["prefix+n", "shift+right"]
+
+[ui.toast]
+# In-app popup when a background agent finishes or needs input (default is off)
+delivery = "herdr"
